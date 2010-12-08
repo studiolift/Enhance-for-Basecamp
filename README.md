@@ -1,6 +1,6 @@
 # Enhance! for Basecamp
 
-A userscript for [Fluid.app](http://fluidapp.com/) and [basecamphq.com](http://basecamphq.com)
+A userscript for [Fluid.app](http://fluidapp.com/) and [basecamphq.com](http://basecamphq.com) with some stuff specific to how we work at Lift
 
 ## About
 
@@ -8,6 +8,7 @@ This userscript can be used with your basecamphq.com instance of Fluid.app (SSB)
 
 * Colour coded to-dos, currently 3 levels labelled by [HOT], [WARM] and [COLD]
 * (To-do overview only) Adds buttons to collapse project to-do lists if they distract you from today's priority, includes a collapse/expand all button
+* (To-do overview only) Adds checkboxes to filter to-do lists based on their type (Active, On Hold and New)
 * (To-do overview only) Adds quick links to a project's timesheet and individual to-do comment pages
 
 Each of these features can be enabled or disabled though a simple config at the top of the script, and the colours for the 3 priority levels can also be set.
@@ -17,6 +18,7 @@ Each of these features can be enabled or disabled though a simple config at the 
 * [Fluid.app](http://fluidapp.com/)
 * A [basecamphq.com](http://basecamphq.com) account.
 * A Basecamp SSB created by Fluid.app.
+* The Lift process!
 
 ## Install
 
@@ -45,6 +47,7 @@ This requires a little bit of tweaking of the JavaScript file. Open the userscri
 `var config = {
   'todoCollapse': true, // Adds a handy button to collapse to-do lists on the overview
   'quickLinks': true,   // Adds quick links to the overview for timesheets and to-do comments
+  'filters': true,      // Adds to-do list filters on the overview
   'priorities': true,   // Add colour coded priorities to to-dos: prefix with [HOT], [WARM] or [COLD]
   'colours': {          // colours for prioritised to-dos
     'hot': '#C00400',   // #C00400
