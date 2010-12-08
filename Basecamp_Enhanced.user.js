@@ -19,9 +19,7 @@ var config = {
     'cold': '#5BB0F2'   // #5BB0F2
   },
   'jqueryCDN': 'https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js'
-}
-
-var jqueryCDN = '';
+};
 
 // ============================================================
 // ============================================================

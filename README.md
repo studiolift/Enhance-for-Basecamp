@@ -16,7 +16,7 @@ Each of these features can be enabled or disabled though a simple config at the 
 
 * [Fluid.app](http://fluidapp.com/)
 * A [basecamphq.com](http://basecamphq.com) account.
-* A [basecamphq.com](http://basecamphq.com) SSB created by Fluid.app.
+* A Basecamp SSB created by Fluid.app.
 
 ## Install
 
@@ -25,3 +25,36 @@ Each of these features can be enabled or disabled though a simple config at the 
 3. Reload the page or restart your SSB to ensure it has been installed correctly.
 
 And that's it! You may need to reload the page or restart your SSB to ensure it has been installed correctly.
+
+## Usage
+
+The quick links and to-do collapse features will automatically start working, check your To-Do overview page to try them out! As for colour coded to-dos you will need to do a little bit of set up on your to-do items. Don't worry, if a to-do item hasn't had a priority set it will still appear as normal, this is just a handy extra visual cue.
+
+To colour code your to-dos, prefix the to-do text with one of the following priorities, including square brackets:
+
+* [HOT]
+* [WARM]
+* [COLD]
+
+Use [HOT] for your top priority items, [WARM] for medium and [COLD] for items that are in the not urgent, "when I can get to it" category. Edit your to-dos or create new ones, then when you view a following page with that to-do item listed it will be coloured coded.
+
+## Configuration
+
+This requires a little bit of tweaking of the JavaScript file. Open the userscript, Basecamp_Enhanced.user.js in your chosen text editor, then look for the "Configuration" near the top. This section contains a config object, by default it should look like this:
+
+`var config = {
+  'todoCollapse': true, // Adds a handy button to collapse to-do lists on the overview
+  'quickLinks': true,   // Adds quick links to the overview for timesheets and to-do comments
+  'priorities': true,   // Add colour coded priorities to to-dos: prefix with [HOT], [WARM] or [COLD]
+  'colours': {          // colours for prioritised to-dos
+    'hot': '#C00400',   // #C00400
+    'warm': '#D96B00',  // #D96B00
+    'cold': '#5BB0F2'   // #5BB0F2
+  },
+  'jqueryCDN': 'https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js'
+};`
+
+The first three values are for enabling and disabling features. Change "true" to "false" to disable and then back to "true" to enable. The "colours" block is for setting the 3 priority colours for to-do items, just in case you don't like the defaults. These can contain any colour you would usually use in CSS, and if you accidentally get too carried away the original colours are included in a comment to the right of each value.
+
+Finally, the last item is the URL to the jQuery CDN which you shouldn't need to change, but it is there if you really need to!
+
