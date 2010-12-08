@@ -2,7 +2,10 @@
 // @name        Enhance! for Basecamp
 // @namespace   http://fluidapp.com
 // @description Adds various enhancements to Basecamp, includeing collapsable to-do lists, priority colouring and quick links
-// @include     *
+// @include     http://basecamphq.com/*
+// @include     https://basecamphq.com/*
+// @include     http://*.basecamphq.com/*
+// @include     https://*.basecamphq.com/*
 // @author      Mike Robinson
 // @homepage    http://twitter.com/akamike
 // ==/UserScript==
