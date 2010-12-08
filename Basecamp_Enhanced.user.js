@@ -45,10 +45,10 @@ function enhance() {
     '.quick_link:hover { background-color:transparent; cursor:pointer; }',
     '.quick_link.time { background-position:-392px 0; }',
     '.quick_link.comments { background-position:-104px 0; width:13px; line-height:13px; margin:2px 0 0 5px; }',
-    '.collapse { position:absolute; left:30px; top:55px; }',
-    'h2 button, .collapse button { background-color:#EEE; border:solid 1px #CCC; margin-left:-5px; width:17px; height:16px; text-align:center; line-height:14px; padding:0; position:relative; top:-2px; }',
-    '.collapse button { width:85px; padding:0 5px; text-align:left; }',
-    'h2 button:hover, .collapse button:hover { background-color:#FFF; cursor:pointer; }'
+    '#collapse { position:absolute; left:30px; top:55px; }',
+    'h2 button, #collapse button { background-color:#EEE; border:solid 1px #CCC; margin-left:-5px; width:17px; height:16px; text-align:center; line-height:14px; padding:0; position:relative; top:-2px; }',
+    '#collapse button { width:85px; padding:0 5px; text-align:left; }',
+    'h2 button:hover, #collapse button:hover { background-color:#FFF; cursor:pointer; }'
   ].join('\n');
 
   j('head').append('<style>' + css + '</style>');
@@ -57,7 +57,7 @@ function enhance() {
   if (j('body.todoglobal').length > 0) {
     // Collapable global todo lists
     if (config.todoCollapse) {
-      j('h2', '.todo_list').prepend('<button class="hide">-</button><button class="show" style="display:none">+</button>');
+      j('h2', '.todo_list').prepend('<button class="hide" title="Collapse">-</button><button class="show" style="display:none" title="Expand">+</button>');
 
       j('h2 button').click(function(e){
         var btn = j(this);
@@ -70,9 +70,9 @@ function enhance() {
         e.preventDefault();
       });
 
-      j('.innercol', '.Full').prepend('<div class="collapse"><button class="hide">- Collapse All</button><button class="show" style="display:none">+ Expand All</button></div>');
+      j('.innercol', '.Full').prepend('<div id="collapse"><button class="hide">- Collapse All</button><button class="show" style="display:none">+ Expand All</button></div>');
 
-      j('.collapse button.hide').click(function(e){
+      j('#collapse button.hide').click(function(e){
         var btn = j(this);
 
         j('.todo_list table, .todo_list .hide').hide();
@@ -83,7 +83,7 @@ function enhance() {
         e.preventDefault();
       });
 
-      j('.collapse button.show').click(function(e){
+      j('#collapse button.show').click(function(e){
         var btn = j(this);
 
         j('.todo_list table, .todo_list .hide').show();
