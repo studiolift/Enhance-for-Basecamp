@@ -1,4 +1,4 @@
-# Basecamp Enhanced
+# Enhance! for Basecamp
 
 A userscript for [Fluid.app](http://fluidapp.com/) and [basecamphq.com](http://basecamphq.com)
 
@@ -21,7 +21,7 @@ Each of these features can be enabled or disabled though a simple config at the 
 ## Install
 
 1. Place the file into your Basecamp SSB's userscript folder located at ~/Library/Application Support/Fluid/SSB/<your-ssb-name>/Userscripts. You can also access this from your Basecamp SSB using Userscripts > Open Userscripts Folder.
-2. In your Basecamp SSB, Userscripts > Reload All Userscripts, and then Userscripts > Basecamp Enhanced.
+2. In your Basecamp SSB, Userscripts > Reload All Userscripts, and then Userscripts > Enhance! for Basecamp.
 3. Reload the page or restart your SSB to ensure it has been installed correctly.
 
 And that's it! You may need to reload the page or restart your SSB to ensure it has been installed correctly.
@@ -40,7 +40,7 @@ Use [HOT] for your top priority items, [WARM] for medium and [COLD] for items th
 
 ## Configuration
 
-This requires a little bit of tweaking of the JavaScript file. Open the userscript, Basecamp_Enhanced.user.js in your chosen text editor, then look for the "Configuration" near the top. This section contains a config object, by default it should look like this:
+This requires a little bit of tweaking of the JavaScript file. Open the userscript, `Enhance_for_Basecamp.user.js` in your chosen text editor, then look for the "Configuration" near the top. This section contains a config object, by default it should look like this:
 
 `var config = {
   'todoCollapse': true, // Adds a handy button to collapse to-do lists on the overview
@@ -57,4 +57,6 @@ This requires a little bit of tweaking of the JavaScript file. Open the userscri
 The first three values are for enabling and disabling features. Change "true" to "false" to disable and then back to "true" to enable. The "colours" block is for setting the 3 priority colours for to-do items, just in case you don't like the defaults. These can contain any colour you would usually use in CSS, and if you accidentally get too carried away the original colours are included in a comment to the right of each value.
 
 Finally, the last item is the URL to the jQuery CDN which you shouldn't need to change, but it is there if you really need to!
+
+When you're done, save the file and reload your current Basecamp SSB page to see your changes.
 
