@@ -18,6 +18,7 @@
 var config = {
   'todoCollapse': true, // Adds a handy button to collapse to-do lists on the overview
   'quickLinks': true,   // Adds quick links to the overview for timesheets and to-do comments
+  'filters': true,      // Adds to-do list filters on the overview
   'priorities': true,   // Add colour coded priorities to to-dos: prefix with [HOT], [WARM] or [COLD]
   'colours': {          // colours for prioritised to-dos
     'hot': '#C00400',   // #C00400
@@ -53,7 +54,8 @@ function enhance() {
     '#collapse { position:absolute; left:30px; top:55px; }',
     'h2 button, #collapse button { background-color:#EEE; border:solid 1px #CCC; margin-left:-5px; width:17px; height:16px; text-align:center; line-height:14px; padding:0; position:relative; top:-2px; }',
     '#collapse button { width:85px; padding:0 5px; text-align:left; }',
-    'h2 button:hover, #collapse button:hover { background-color:#FFF; cursor:pointer; }'
+    'h2 button:hover, #collapse button:hover { background-color:#FFF; cursor:pointer; }',
+    '#filters { display:inline; font-size:11px; }'
   ].join('\n');
 
   j('head').append('<style>' + css + '</style>');
@@ -120,6 +122,15 @@ function enhance() {
         });
       });
     }
+
+    // Filters
+    if (config.filters) {
+      j('#responsible_party_form').append('<div id="filters"><label for="onhold"><input type="checkbox" name="onhold" id="onhold" value="On hold" checked="checked"/> On hold</label><label for="active"><input type="checkbox" name="active" id="active" value="Active" checked="checked"/> Active</label><label for="new"><input type="checkbox" name="new" id="new" value="New" checked="checked"/> New</label></div>');
+      j('#filters input:checkbox').click(function(e){
+        filterLists(j(this).val());
+      });
+      j('div.page_header_links').attr('style', 'width:600px !important');
+    }
   }
 
   // Priorities
@@ -142,6 +153,18 @@ function enhance() {
       }
     });
   }
+}
+
+function filterLists(query) {
+  jQuery('.todo_list table tr[class]').each(function(){
+    if (jQuery.trim(jQuery('td:first-child', this).text()) == query) {
+      jQuery(this).toggle();
+
+      jQuery(this).nextUntil('tr[class]').each(function(){
+        jQuery(this).toggle();
+      });
+    }
+  });
 }
 
 // ------------------------------------------------------------
