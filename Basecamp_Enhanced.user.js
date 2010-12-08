@@ -64,8 +64,8 @@ function enhance() {
         var parent = btn.closest('h2');
 
         parent.next('table').toggle();
-        btn.siblings('button').toggle();
-        btn.hide();
+        btn.hide()
+           .siblings('button').toggle();
 
         e.preventDefault();
       });
@@ -75,11 +75,10 @@ function enhance() {
       j('.collapse button.hide').click(function(e){
         var btn = j(this);
 
-        j('.todo_list table').hide();
-        j('.todo_list .hide').hide();
+        j('.todo_list table, .todo_list .hide').hide();
         j('.todo_list .show').show();
-        btn.siblings('button').toggle();
-        btn.hide();
+        btn.hide()
+           .siblings('button').toggle();
 
         e.preventDefault();
       });
@@ -87,11 +86,10 @@ function enhance() {
       j('.collapse button.show').click(function(e){
         var btn = j(this);
 
-        j('.todo_list table').show();
-        j('.todo_list .hide').show();
+        j('.todo_list table, .todo_list .hide').show();
         j('.todo_list .show').hide();
-        btn.siblings('button').toggle();
-        btn.hide();
+        btn.hide()
+           .siblings('button').toggle();
 
         e.preventDefault();
       });
@@ -106,12 +104,12 @@ function enhance() {
         var url = j('a', h2).attr('href').replace('todo_lists', 'time_entries');
         h2.append('<a href="' + url + '" class="quick_link time">Timesheet</a>');
 
-        var proj = j('a', h2).attr('href').replace('todo_lists', '');
+        var proj = j('a', h2).attr('href').replace('todo_lists', 'todo_items/');
 
         // Todo comments
         j('tr', this).each(function(){
           var id = j('small', this).attr('id').split('_');
-          var url = proj + 'todo_items/' + id[1] + '/comments';
+          var url = proj + id[1] + '/comments';
 
           j('.content', this).append('<a href="' + url + '" class="quick_link comments">Comments</a>');
         });
