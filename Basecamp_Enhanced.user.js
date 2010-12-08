@@ -1,10 +1,13 @@
 // ==UserScript==
-// @name           Basecamp Enhanced
-// @include        *
-// @description    Adds various config to basecamp, includeing collapsable to-do lists, priority colouring and quick links
+// @name        Basecamp Enhanced
+// @namespace   http://fluidapp.com
+// @description Adds various enhancements to basecamp, includeing collapsable to-do lists, priority colouring and quick links
+// @include     *
+// @author      Mike Robinson
+// @homepage    http://twitter.com/akamike
 // ==/UserScript==
 
-// Last updated: 07-12-2010
+// Last updated: 08-12-2010
 
 // ------------------------------------------------------------
 // Configuration
@@ -19,7 +22,7 @@ var config = {
     'cold': '#5BB0F2'   // #5BB0F2
   },
   'jqueryCDN': 'https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js'
-};
+}
 
 // ============================================================
 // ============================================================
@@ -42,8 +45,10 @@ function enhance() {
     '.quick_link:hover { background-color:transparent; cursor:pointer; }',
     '.quick_link.time { background-position:-392px 0; }',
     '.quick_link.comments { background-position:-104px 0; width:13px; line-height:13px; margin:2px 0 0 5px; }',
-    'h2 button { background-color:#EEE; border:solid 1px #CCC; margin-left:-5px; width:21px; height:19px; text-align:center; line-height:14px; }',
-    'h2 button:hover { background-color:#FFF; cursor:pointer; -webkit-box-shadow:inset 2px 2px 2px #DDD; }'
+    '.collapse { position:absolute; left:30px; top:55px; }',
+    'h2 button, .collapse button { background-color:#EEE; border:solid 1px #CCC; margin-left:-5px; width:17px; height:16px; text-align:center; line-height:14px; padding:0; position:relative; top:-2px; }',
+    '.collapse button { width:85px; padding:0 5px; text-align:left; }',
+    'h2 button:hover, .collapse button:hover { background-color:#FFF; cursor:pointer; }'
   ].join('\n');
 
   j('head').append('<style>' + css + '</style>');
@@ -52,14 +57,39 @@ function enhance() {
   if (j('body.todoglobal').length > 0) {
     // Collapable global todo lists
     if (config.todoCollapse) {
-      j('h2', '.todo_list').prepend('<button class="show" style="display:none">+</button>');
-      j('h2', '.todo_list').prepend('<button class="hide">-</button>');
+      j('h2', '.todo_list').prepend('<button class="hide">-</button><button class="show" style="display:none">+</button>');
 
       j('h2 button').click(function(e){
         var btn = j(this);
         var parent = btn.closest('h2');
 
         parent.next('table').toggle();
+        btn.siblings('button').toggle();
+        btn.hide();
+
+        e.preventDefault();
+      });
+
+      j('.innercol', '.Full').prepend('<div class="collapse"><button class="hide">- Collapse All</button><button class="show" style="display:none">+ Expand All</button></div>');
+
+      j('.collapse button.hide').click(function(e){
+        var btn = j(this);
+
+        j('.todo_list table').hide();
+        j('.todo_list .hide').hide();
+        j('.todo_list .show').show();
+        btn.siblings('button').toggle();
+        btn.hide();
+
+        e.preventDefault();
+      });
+
+      j('.collapse button.show').click(function(e){
+        var btn = j(this);
+
+        j('.todo_list table').show();
+        j('.todo_list .hide').show();
+        j('.todo_list .show').hide();
         btn.siblings('button').toggle();
         btn.hide();
 
