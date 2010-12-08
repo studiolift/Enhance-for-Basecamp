@@ -156,12 +156,12 @@ function enhance() {
 }
 
 function filterLists(query) {
-  jQuery('.todo_list table tr[class]').each(function(){
-    if (jQuery.trim(jQuery('td:first-child', this).text()) == query) {
-      jQuery(this).toggle();
+  j('.todo_list table tr[class]').each(function(){
+    if (jQuery.trim(j('td:first-child', this).text()) == query) {
+      j(this).toggle();
 
-      jQuery(this).nextUntil('tr[class]').each(function(){
-        jQuery(this).toggle();
+      j(this).nextUntil('tr[class]').each(function(){
+        j(this).toggle();
       });
     }
   });
