@@ -194,7 +194,6 @@ var Enhance = function(){
 
   // Prevent conflicts with Basecamp's native JS
   $.noConflict();
-  j = jQuery;
 
   // install styles
   var css = [
