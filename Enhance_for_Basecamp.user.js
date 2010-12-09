@@ -142,6 +142,11 @@ function enhance() {
       }
     });
   }
+
+  // Overview Quick link
+  if (config.quickLinks) {
+    j('#settings_signout_and_help > :first-child').after(' <span class="pipe">|</span> <a href="/todo_lists">Overview</a>');
+  }
 }
 
 // ------------------------------------------------------------
