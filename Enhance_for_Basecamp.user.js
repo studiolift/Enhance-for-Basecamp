@@ -22,7 +22,7 @@ var config = {
     'warm': '#D96B00',  // #D96B00
     'cold': '#5BB0F2'   // #5BB0F2
   }
-}
+};
 
 // ------------------------------------------------------------
 // jQuery minified, included here to get around Chrome's
