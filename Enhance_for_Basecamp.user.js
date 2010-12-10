@@ -340,12 +340,11 @@ var Enhance = function(){
       j('form.todo_item').each(function(){
         console.log('adding to form');
         j('.addtl_fields li:first-child', this).before('<li><p>Priority<br /><select class="priority"><option value="" selected="selected">-</option><option value="HOT">HOT</option><option value="WARM">WARM</option><option value="COLD">COLD</option></select></p></li>');
-        j('input:submit', this).click(function(e){
-          var f = j(e.currentTarget).closest('form');
-          var p = j('.priority', f).val();
+        j(this).bind('submit', function(e){
+          var p = j('.priority', e.currentTarget).val();
 
           if (p !== '') {
-            j('.new_item_field', f).val(
+            j('.new_item_field', e.currentTarget).val(
               '[' + p + '] ' +j('.new_item_field', f).val()
             );
           }
