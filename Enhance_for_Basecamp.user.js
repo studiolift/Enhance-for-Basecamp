@@ -335,10 +335,7 @@ var Enhance = function(){
 
     // To-do item priorities
     if (j('body.todos').length > 0) {
-      console.log('todo');
-
       j('form.todo_item').each(function(){
-        console.log('adding to form');
         j('.addtl_fields li:first-child', this).before('<li><p>Priority<br /><select class="priority"><option value="" selected="selected">-</option><option value="HOT">HOT</option><option value="WARM">WARM</option><option value="COLD">COLD</option></select></p></li>');
         j(this).bind('submit', function(e){
           var p = j('.priority', e.currentTarget).val();
