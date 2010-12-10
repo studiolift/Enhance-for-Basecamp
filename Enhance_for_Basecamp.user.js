@@ -17,7 +17,7 @@ var config = {
   'todoCollapse': true, // Adds a handy button to collapse to-do lists on the overview
   'quickLinks': true,   // Adds quick links to the overview for timesheets and to-do comments
   'filters': true,      // Adds to-do list filters on the overview
-  'forms': true, // Adds select boxes to to-do and time forms for common data entry
+  'forms': true,        // Adds select box time forms for common data entry
   'priorities': true,   // Add colour coded priorities to to-dos: prefix with [HOT], [WARM] or [COLD]
   'colours': {          // colours for prioritised to-dos
     'hot': '#C00400',   // #C00400
