@@ -17,6 +17,7 @@ var config = {
   'todoCollapse': true, // Adds a handy button to collapse to-do lists on the overview
   'quickLinks': true,   // Adds quick links to the overview for timesheets and to-do comments
   'filters': true,      // Adds to-do list filters on the overview
+  'forms': true, // Adds select boxes to to-do and time forms for common data entry
   'priorities': true,   // Add colour coded priorities to to-dos: prefix with [HOT], [WARM] or [COLD]
   'colours': {          // colours for prioritised to-dos
     'hot': '#C00400',   // #C00400
@@ -308,6 +309,29 @@ var Enhance = function(){
   // Overview Quick link
   if (config.quickLinks) {
     j('#settings_signout_and_help > :first-child').after(' <span class="pipe">|</span> <a href="/todo_lists">Overview</a>');
+  }
+
+  if (config.forms) {
+    // Time entry tweaks
+    if (j('body.time').length > 0) {
+      var time_select = '<select name="time_entry[hours]" id="time_entry_hours">'
+                      + '<option value="0.25">15 mins</option>'
+                      + '<option value="0.50">30 mins</option>'
+                      + '<option value="0.45">45 mins</option>';
+
+      for (var i = 1; i <= 8; i++) {
+        time_select = time_select
+                    + '<option value="' + i + '.00">' + i + ' hour' + (i > 1 ? 's' : '') + '</option>'
+                    + '<option value="' + i + '.25">' + i + 'h 15m</option>'
+                    + '<option value="' + i + '.50">' + i + 'h 30m</option>'
+                    + '<option value="' + i + '.45">' + i + 'h 45m</option>'
+      }
+
+      time_select = time_select + '</select>';
+
+      j('#time_entry_hours').attr('id', 'old_time_entry_hours').after(time_select);
+      j('#old_time_entry_hours').remove();
+    }
   }
 
   function filterLists(query) {
