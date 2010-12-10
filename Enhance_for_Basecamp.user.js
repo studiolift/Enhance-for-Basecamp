@@ -213,7 +213,7 @@ var Enhance = function(){
   j('head').append('<style>' + css + '</style>');
 
   // only applies to the to-do overview page
-  if (j('body.todoglobal').length > 0) {
+  if (j('body.todoglobal .todo_list').length > 0) {
     // Collapable global todo lists
     if (config.todoCollapse) {
       j('h2', '.todo_list').prepend('<button class="hide" title="Collapse">-</button><button class="show" style="display:none" title="Expand">+</button>');

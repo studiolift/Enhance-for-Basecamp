@@ -11,6 +11,7 @@ This Userscript can be used with Basecamp to add some handy extras to make your 
 * (To-do overview only) Adds checkboxes to filter to-do lists based on their type (Active, On Hold and New)
 * (To-do overview only) Adds quick links to a project's timesheet and individual to-do comment pages
 * Adds time select option for common time settings, split into 15 min blocks
+* Adds a quick link to the to-do overview page on the top right nav
 
 Each of these features can be enabled or disabled though a simple config at the top of the script, and the colours for the 3 priority levels can also be set.
 
