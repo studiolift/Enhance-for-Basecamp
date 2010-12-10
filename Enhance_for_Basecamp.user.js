@@ -311,43 +311,25 @@ var Enhance = function(){
     j('#settings_signout_and_help > :first-child').after(' <span class="pipe">|</span> <a href="/todo_lists">Overview</a>');
   }
 
-  if (config.forms) {
+  if (config.forms && j('body.time').length > 0) {
     // Time entry simple time select
-    if (j('body.time').length > 0) {
-      var time_select = '<select name="time_entry[hours]" id="time_entry_hours">'
-                      + '<option value="0.25">15 mins</option>'
-                      + '<option value="0.50">30 mins</option>'
-                      + '<option value="0.45">45 mins</option>';
+    var time_select = '<select name="time_entry[hours]" id="time_entry_hours">'
+                    + '<option value="0.25">15 mins</option>'
+                    + '<option value="0.50">30 mins</option>'
+                    + '<option value="0.45">45 mins</option>';
 
-      for (var i = 1; i <= 8; i++) {
-        time_select = time_select
-                    + '<option value="' + i + '.00">' + i + ' hour' + (i > 1 ? 's' : '') + '</option>'
-                    + '<option value="' + i + '.25">' + i + 'h 15m</option>'
-                    + '<option value="' + i + '.50">' + i + 'h 30m</option>'
-                    + '<option value="' + i + '.45">' + i + 'h 45m</option>'
-      }
-
-      time_select = time_select + '</select>';
-
-      j('#time_entry_hours').addClass('remove_me').after(time_select);
-      j('.remove_me').remove();
+    for (var i = 1; i <= 8; i++) {
+      time_select = time_select
+                  + '<option value="' + i + '.00">' + i + ' hour' + (i > 1 ? 's' : '') + '</option>'
+                  + '<option value="' + i + '.25">' + i + 'h 15m</option>'
+                  + '<option value="' + i + '.50">' + i + 'h 30m</option>'
+                  + '<option value="' + i + '.45">' + i + 'h 45m</option>'
     }
 
-    // To-do item priorities
-    if (j('body.todos').length > 0) {
-      j('form.todo_item').each(function(){
-        j('.addtl_fields li:first-child', this).before('<li><p>Priority<br /><select class="priority"><option value="" selected="selected">-</option><option value="HOT">HOT</option><option value="WARM">WARM</option><option value="COLD">COLD</option></select></p></li>');
-        j(this).bind('submit', function(e){
-          var p = j('.priority', e.currentTarget).val();
+    time_select = time_select + '</select>';
 
-          if (p !== '') {
-            j('.new_item_field', e.currentTarget).val(
-              '[' + p + '] ' +j('.new_item_field', f).val()
-            );
-          }
-        });
-      });
-    }
+    j('#time_entry_hours').addClass('remove_me').after(time_select);
+    j('.remove_me').remove();
   }
 
   function filterLists(query) {
