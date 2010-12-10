@@ -9,6 +9,7 @@ This Userscript can be used with Basecamp to add some handy extras to make your 
 * Colour coded to-dos, currently 3 levels labelled by [HOT], [WARM] and [COLD]
 * (To-do overview only) Adds buttons to collapse project to-do lists if they distract you from today's priority, includes a collapse/expand all button
 * (To-do overview only) Adds quick links to a project's timesheet and individual to-do comment pages
+* Adds a quick link to the to-do overview page on the top right nav
 
 Each of these features can be enabled or disabled though a simple config at the top of the script, and the colours for the 3 priority levels can also be set.
 
