@@ -312,7 +312,7 @@ var Enhance = function(){
   }
 
   if (config.forms) {
-    // Time entry tweaks
+    // Time entry simple time select
     if (j('body.time').length > 0) {
       var time_select = '<select name="time_entry[hours]" id="time_entry_hours">'
                       + '<option value="0.25">15 mins</option>'
@@ -329,8 +329,28 @@ var Enhance = function(){
 
       time_select = time_select + '</select>';
 
-      j('#time_entry_hours').attr('id', 'old_time_entry_hours').after(time_select);
-      j('#old_time_entry_hours').remove();
+      j('#time_entry_hours').addClass('remove_me').after(time_select);
+      j('.remove_me').remove();
+    }
+
+    // To-do item priorities
+    if (j('body.todos').length > 0) {
+      console.log('todo');
+
+      j('form.todo_item').each(function(){
+        console.log('adding to form');
+        j('.addtl_fields li:first-child', this).before('<li><p>Priority<br /><select class="priority"><option value="" selected="selected">-</option><option value="HOT">HOT</option><option value="WARM">WARM</option><option value="COLD">COLD</option></select></p></li>');
+        j('input:submit', this).click(function(e){
+          var f = j(e.currentTarget).closest('form');
+          var p = j('.priority', f).val();
+
+          if (p !== '') {
+            j('.new_item_field', f).val(
+              '[' + p + '] ' +j('.new_item_field', f).val()
+            );
+          }
+        });
+      });
     }
   }
 
