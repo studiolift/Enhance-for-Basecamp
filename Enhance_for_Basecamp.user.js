@@ -199,7 +199,8 @@ var Enhance = function(){
 
   // install styles
   var css = [
-    '.quick_link { font-size:11px; font-weight:normal; text-decoration:none; background:transparent url(https://asset0.basecamphq.com/images/basecamp_sprites.png) no-repeat 0 0; width:17px; text-indent:-9999px; display:inline-block; line-height:17px; }',
+    '.quick_link { font-size:11px; font-weight:normal; text-decoration:none; background:transparent url(https://asset0.basecamphq.com/images/basecamp_sprites.png) no-repeat 0 0; width:17px; text-indent:-9999px; display:inline-block; line-height:17px; visibility:hidden; }',
+    '.todo_list:hover h2 .quick_link, tr:hover .quick_link { visibility:visible; }',
     '.quick_link:hover { background-color:transparent; cursor:pointer; }',
     '.quick_link.time { background-position:-392px 0; }',
     '.quick_link.comments { background-position:-104px 0; width:13px; line-height:13px; margin:2px 0 0 5px; }',
@@ -270,7 +271,7 @@ var Enhance = function(){
           var id = j('small', this).attr('id').split('_');
           var url = proj + id[1] + '/comments';
 
-          j('.content', this).append('<a href="' + url + '" class="quick_link comments">Comments</a>');
+          j('td:last-child', this).append('<a href="' + url + '" class="quick_link comments">Comments</a>');
         });
       });
     }
