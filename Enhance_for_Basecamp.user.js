@@ -268,7 +268,7 @@ var Enhance = function(){
           var id = j('small', this).attr('id').split('_');
           var url = proj + id[1] + '/comments';
 
-          j('.content', this).append('<a href="' + url + '" class="quick_link comments">Comments</a>');
+          j('td:last-child', this).append('<a href="' + url + '" class="quick_link comments">Comments</a>');
         });
       });
     }
