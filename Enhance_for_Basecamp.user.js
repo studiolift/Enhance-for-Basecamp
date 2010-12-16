@@ -208,7 +208,8 @@ var Enhance = function(){
     'h2 button, #collapse button { background-color:#EEE; border:solid 1px #CCC; margin-left:-5px; width:17px; height:16px; text-align:center; line-height:14px; padding:0; position:relative; top:-2px; }',
     '#collapse button { width:85px; padding:0 5px; text-align:left; }',
     'h2 button:hover, #collapse button:hover { background-color:#FFF; cursor:pointer; }',
-    '#filters { display:inline; font-size:11px; }'
+    '#filters { display:inline; font-size:11px; }',
+    '#filters label { cursor:pointer; }'
   ].join('\n');
 
   j('head').append('<style>' + css + '</style>');
