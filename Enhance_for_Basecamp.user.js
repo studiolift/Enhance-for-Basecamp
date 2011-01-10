@@ -43,10 +43,58 @@ var Enhance = function(){
     'h2 button:hover, #collapse button:hover { background-color:#FFF; cursor:pointer; }',
     '.todo_cold { color:' + config.colours.cold + '; }',
     '.todo_warm { color:' + config.colours.warm + '; }',
-    '.todo_hot { color:' + config.colours.hot + '; }'
+    '.todo_hot { color:' + config.colours.hot + '; }',
+    '.hidden { display:none; }'
   ].join('\n');
 
   document.getElementsByTagName('head')[0].appendChild(style);
+
+  var body = document.getElementsByTagName('body')[0];
+
+  if (body.className.match('.todoglobal')) {
+    var todoLists = body.querySelectorAll('.todo_list');
+
+    if (todoLists.length > 0) {
+      for (var i = 0; i < todoLists.length; i++) {
+        var list = todoLists[i];
+
+        if (config.todoCollapse) {
+          var h2 = list.getElementsByTagName('h2')[0];
+
+          var minButton = document.createElement('button');
+              minButton.className = 'hide';
+              minButton.title = 'Collapse';
+              minButton.textContent = '-';
+              minButton.addEventListener('click', function(e){
+                e.target.parentNode.nextSibling.nextSibling.className += ' hidden';
+                e.target.className += ' hidden';
+                e.target.nextSibling.className = e.target.nextSibling.className.replace(/ hidden/, '');
+                e.preventDefault();
+              });
+
+          var maxButton = document.createElement('button');
+              maxButton.className = 'show hidden';
+              maxButton.title = 'Expand';
+              maxButton.textContent = '+';
+              maxButton.addEventListener('click', function(e){
+                var table = e.target.parentNode.nextSibling.nextSibling;
+                table.className = table.className.replace(/ hidden/, '');
+                e.target.className += ' hidden';
+                e.target.previousSibling.className = e.target.previousSibling.className.replace(/ hidden/, '');
+                e.preventDefault();
+              });
+
+          h2.insertBefore(maxButton, h2.firstChild);
+          h2.insertBefore(minButton, maxButton);
+        }
+
+        if (config.quickLinks) {
+          // todo
+        }
+      }
+    }
+  }
+
   /*
   // only applies to the to-do overview page
   if (j('body.todoglobal .todo_list').length > 0) {
@@ -115,7 +163,7 @@ var Enhance = function(){
 
   // Priorities
   if (config.priorities) {
-    var todos = document.querySelectorAll('.todolist .content, .item .item_content, .items_wrapper .content span, .page_header .content .item, .event .item span');
+    var todos = body.querySelectorAll('.todolist .content, .item .item_content, .items_wrapper .content span, .page_header .content .item, .event .item span');
 
     for (var i = 0; i < todos.length; i++) {
       var todo = todos[i];
@@ -137,7 +185,7 @@ var Enhance = function(){
         }
 
         if (classSuffix) {
-          todo.className = todo.className + ' todo_' + classSuffix;
+          todo.className += ' todo_' + classSuffix;
         }
       }
     }
@@ -147,19 +195,19 @@ var Enhance = function(){
   if (config.quickLinks) {
     // Separating pipe
     var separator = document.createElement('span');
-    separator.className = 'pipe';
-    separator.textContent = '\|';
+        separator.className = 'pipe';
+        separator.textContent = '\|';
 
     // The actual link
     var overviewLink = document.createElement('a');
-    overviewLink.href = '/todo_lists';
-    overviewLink.textContent = 'Overview';
+        overviewLink.href = '/todo_lists';
+        overviewLink.textContent = 'Overview';
 
     // Adding required HTML and spaces
     var globalLinks = document.getElementById('settings_signout_and_help');
-    globalLinks.insertBefore(overviewLink, globalLinks.childNodes[2]);
-    globalLinks.insertBefore(document.createTextNode(' '), overviewLink);
-    globalLinks.insertBefore(separator, overviewLink.previousSibling);
-    globalLinks.insertBefore(document.createTextNode(' '), separator);
+        globalLinks.insertBefore(overviewLink, globalLinks.childNodes[2]);
+        globalLinks.insertBefore(document.createTextNode(' '), overviewLink);
+        globalLinks.insertBefore(separator, overviewLink.previousSibling);
+        globalLinks.insertBefore(document.createTextNode(' '), separator);
   }
 }();
