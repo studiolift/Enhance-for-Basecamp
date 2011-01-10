@@ -29,13 +29,9 @@ var config = {
 // ------------------------------------------------------------
 
 var Enhance = function(){
-  var j = jQuery;
-
-  // Prevent conflicts with Basecamp's native JS
-  $.noConflict();
-
-  // install styles
-  var css = [
+  // Add custom styles
+  var style = document.createElement('style');
+  style.textContent = [
     '.quick_link { font-size:11px; font-weight:normal; text-decoration:none; background:transparent url(https://asset0.basecamphq.com/images/basecamp_sprites.png) no-repeat 0 0; width:17px; text-indent:-9999px; display:inline-block; line-height:17px; visibility:hidden; }',
     '.todo_list:hover h2 .quick_link, tr:hover .quick_link { visibility:visible; }',
     '.quick_link:hover { background-color:transparent; cursor:pointer; }',
@@ -47,7 +43,7 @@ var Enhance = function(){
     'h2 button:hover, #collapse button:hover { background-color:#FFF; cursor:pointer; }'
   ].join('\n');
 
-  j('head').append('<style>' + css + '</style>');
+  document.getElementsByTagName('head')[0].appendChild(style);
 
   // only applies to the to-do overview page
   if (j('body.todoglobal .todo_list').length > 0) {
