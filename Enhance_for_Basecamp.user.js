@@ -336,6 +336,7 @@ var Enhance = function(){
   if (config.forms && j('body.time').length > 0) {
     // Time entry simple time select
     var time_select = '<select name="time_entry[hours]" id="time_entry_hours">'
+                    + '<option value="0">0</option>'
                     + '<option value="0.25">15 mins</option>'
                     + '<option value="0.50">30 mins</option>'
                     + '<option value="0.45">45 mins</option>';
