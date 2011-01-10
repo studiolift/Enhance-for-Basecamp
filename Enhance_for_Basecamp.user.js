@@ -328,7 +328,7 @@ var Enhance = function(){
     j('.formatted_text_body p').each(function(){
       var t = j(this).html();
       j(this).html(
-        t.replace(/\#([0-9]{1,})[\(\)\. \,]{0,}/g, '<a href="/todo_items/$1/comments">#$1</a>')
+        t.replace(/\#([0-9]{1,})/g, '<a href="/todo_items/$1/comments">#$1</a>')
       );
     });
   }
