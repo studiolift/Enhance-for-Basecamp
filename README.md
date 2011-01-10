@@ -10,6 +10,8 @@ This Userscript can be used with Basecamp to add some handy extras to make your 
 * (To-do overview only) Adds buttons to collapse project to-do lists if they distract you from today's priority, includes a collapse/expand all button
 * (To-do overview only) Adds checkboxes to filter to-do lists based on their type (Active, On Hold and New)
 * (To-do overview only) Adds quick links to a project's timesheet and individual to-do comment pages
+* Makes todo item IDs visible where appropriate
+* Replaces todo IDs in comments/messages with links to the todo item (e.g. #123456789 links to the todo of that ID)
 * Adds time select option for common time settings, split into 15 min blocks
 * Adds a quick link to the to-do overview page on the top right nav
 
@@ -47,6 +49,8 @@ To colour code your to-dos, prefix the to-do text with one of the following prio
 
 Use [HOT] for your top priority items, [WARM] for medium and [COLD] for items that are in the not urgent, "when I can get to it" category. Edit your to-dos or create new ones, then when you view a following page with that to-do item listed it will be coloured coded.
 
+To easily link to todo items in messages, copy the ID (visible next to a todo item) and paste it into your message with a prefix of #. For example: #123456789 would automatically link to "/todo_items/123456789/comments". 
+
 ## Configuration
 
 This requires a little bit of tweaking of the JavaScript file. Open the Userscript, `Enhance_for_Basecamp.user.js` in your chosen text editor, then look for the "Configuration" near the top. This section contains a config object, by default it should look like this:
@@ -57,6 +61,7 @@ This requires a little bit of tweaking of the JavaScript file. Open the Userscri
       'filters': true,      // Adds to-do list filters on the overview
       'forms': true,        // Adds select box time forms for common data entry
       'priorities': true,   // Add colour coded priorities to to-dos: prefix with [HOT], [WARM] or [COLD]
+      'todoIDs': true,      // Add todo IDs and todo ID linking
       'colours': {          // colours for prioritised to-dos
         'hot': '#C00400',   // #C00400
         'warm': '#D96B00',  // #D96B00

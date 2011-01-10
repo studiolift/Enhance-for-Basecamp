@@ -19,7 +19,7 @@ var config = {
   'filters': true,      // Adds to-do list filters on the overview
   'forms': true,        // Adds select box time forms for common data entry
   'priorities': true,   // Add colour coded priorities to to-dos: prefix with [HOT], [WARM] or [COLD]
-  'todoIDs': true,
+  'todoIDs': true,      // Add todo IDs and todo ID linking
   'colours': {          // colours for prioritised to-dos
     'hot': '#C00400',   // #C00400
     'warm': '#D96B00',  // #D96B00
