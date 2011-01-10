@@ -19,6 +19,7 @@ var config = {
   'filters': true,      // Adds to-do list filters on the overview
   'forms': true,        // Adds select box time forms for common data entry
   'priorities': true,   // Add colour coded priorities to to-dos: prefix with [HOT], [WARM] or [COLD]
+  'todoIDs': true,
   'colours': {          // colours for prioritised to-dos
     'hot': '#C00400',   // #C00400
     'warm': '#D96B00',  // #D96B00
@@ -204,6 +205,7 @@ var Enhance = function(){
     '.quick_link:hover { background-color:transparent; cursor:pointer; }',
     '.quick_link.time { background-position:-392px 0; }',
     '.quick_link.comments { background-position:-104px 0; width:13px; line-height:13px; margin:2px 0 0 5px; }',
+    '.todo_id { padding-left:5px; font-size:11px; color:#999; }',
     '#collapse { position:absolute; left:30px; top:55px; }',
     'h2 button, #collapse button { background-color:#EEE; border:solid 1px #CCC; margin-left:-5px; width:17px; height:16px; text-align:center; line-height:14px; padding:0; position:relative; top:-2px; }',
     '#collapse button { width:85px; padding:0 5px; text-align:left; }',
@@ -276,6 +278,14 @@ var Enhance = function(){
         });
       });
     }
+    
+    // Todo IDs
+    if (config.todoIDs) {
+      j('.todo_list tr').each(function(){
+        var id = j('small', this).attr('id').split('_');
+        j('td:last-child .content', this).after('<span class="todo_id">[#' + id[1] + ']</span>');
+      });
+    }
 
     // Filters
     if (config.filters) {
@@ -311,6 +321,16 @@ var Enhance = function(){
   // Overview Quick link
   if (config.quickLinks) {
     j('#settings_signout_and_help > :first-child').after(' <span class="pipe">|</span> <a href="/todo_lists">Overview</a>');
+  }
+  
+  // Inline todo ID linking
+  if (config.todoIDs) {
+    j('.formatted_text_body p').each(function(){
+      var t = j(this).html();
+      j(this).html(
+        t.replace(/\#([0-9]{1,})[\(\)\. \,]{0,}/g, '<a href="/todo_items/$1/comments">#$1</a>')
+      );
+    });
   }
 
   if (config.forms && j('body.time').length > 0) {
