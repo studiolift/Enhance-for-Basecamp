@@ -44,7 +44,7 @@ var Enhance = function(){
   ].join('\n');
 
   document.getElementsByTagName('head')[0].appendChild(style);
-
+  /*
   // only applies to the to-do overview page
   if (j('body.todoglobal .todo_list').length > 0) {
     // Collapable global todo lists
@@ -128,10 +128,25 @@ var Enhance = function(){
         }
       }
     });
-  }
+  }*/
 
   // Overview Quick link
   if (config.quickLinks) {
-    j('#settings_signout_and_help > :first-child').after(' <span class="pipe">|</span> <a href="/todo_lists">Overview</a>');
+    // Separating pipe
+    var separator = document.createElement('span');
+    separator.className = 'pipe';
+    separator.textContent = '\|';
+
+    // The actual link
+    var overviewLink = document.createElement('a');
+    overviewLink.href = '/todo_lists';
+    overviewLink.textContent = 'Overview';
+
+    // Adding required HTML and spaces
+    var globalLinks = document.getElementById('settings_signout_and_help');
+    globalLinks.insertBefore(overviewLink, globalLinks.childNodes[2]);
+    globalLinks.insertBefore(document.createTextNode(' '), overviewLink);
+    globalLinks.insertBefore(separator, overviewLink.previousSibling);
+    globalLinks.insertBefore(document.createTextNode(' '), separator);
   }
 }();
