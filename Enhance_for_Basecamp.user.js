@@ -40,7 +40,10 @@ var Enhance = function(){
     '#collapse { position:absolute; left:30px; top:55px; }',
     'h2 button, #collapse button { background-color:#EEE; border:solid 1px #CCC; margin-left:-5px; width:17px; height:16px; text-align:center; line-height:14px; padding:0; position:relative; top:-2px; }',
     '#collapse button { width:85px; padding:0 5px; text-align:left; }',
-    'h2 button:hover, #collapse button:hover { background-color:#FFF; cursor:pointer; }'
+    'h2 button:hover, #collapse button:hover { background-color:#FFF; cursor:pointer; }',
+    '.todo_cold { color:' + config.colours.cold + '; }',
+    '.todo_warm { color:' + config.colours.warm + '; }',
+    '.todo_hot { color:' + config.colours.hot + '; }'
   ].join('\n');
 
   document.getElementsByTagName('head')[0].appendChild(style);
@@ -108,27 +111,37 @@ var Enhance = function(){
       });
     }
   }
+  */
 
   // Priorities
   if (config.priorities) {
-    j('.todolist .content, .item .item_content, .items_wrapper .content span, .page_header .content .item').each(function(){
-      var t = j(this).text().match(/\[(HOT|WARM|COLD)\]/g);
+    var todos = document.querySelectorAll('.todolist .content, .item .item_content, .items_wrapper .content span, .page_header .content .item, .event .item span');
+
+    for (var i = 0; i < todos.length; i++) {
+      var todo = todos[i];
+      var t = todo.textContent.match(/\[(HOT|WARM|COLD)\]/g);
 
       if (t) {
+        var classSuffix = false;
+
         switch (t[0]) {
           case '[COLD]':
-            j(this).css('color', config.colours.cold);
+            classSuffix = 'cold';
             break;
           case '[WARM]':
-            j(this).css('color', config.colours.warm);
+            classSuffix = 'warm';
             break;
           case '[HOT]':
-            j(this).css('color', config.colours.hot);
+            classSuffix = 'hot';
             break;
         }
+
+        if (classSuffix) {
+          todo.className = todo.className + ' todo_' + classSuffix;
+        }
       }
-    });
-  }*/
+    }
+  }
 
   // Overview Quick link
   if (config.quickLinks) {
