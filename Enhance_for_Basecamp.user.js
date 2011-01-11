@@ -29,6 +29,7 @@ var config = {
 // ------------------------------------------------------------
 
 var Enhance = function(){
+  var o = 1;
   // Add custom styles
   var style = document.createElement('style');
   style.textContent = [
@@ -51,7 +52,6 @@ var Enhance = function(){
 
   // Helper stuff
   var body = document.getElementsByTagName('body')[0];
-
 
   Element.prototype.hasClass = function() {
     if (this.className.indexOf(arguments[0]) != -1) {
@@ -111,10 +111,9 @@ var Enhance = function(){
     if (todoLists.length > 0) {
       for (var i = 0; i < todoLists.length; i++) {
         var list = todoLists[i];
+        var h2 = list.getElementsByTagName('h2')[0];
 
         if (config.todoCollapse) {
-          var h2 = list.getElementsByTagName('h2')[0];
-
           var minButton = document.createElement('button');
               minButton.className = 'hide';
               minButton.title = 'Collapse';
@@ -142,8 +141,30 @@ var Enhance = function(){
           h2.insertBefore(minButton, maxButton);
         }
 
+        // Quick links
         if (config.quickLinks) {
-          // todo
+          // Timesheet
+          var timesheet = document.createElement('a');
+              timesheet.href = h2.getElementsByTagName('a')[0].href.replace('todo_lists', 'time_entries');
+              timesheet.className = 'quick_link time';
+              timesheet.textContent = 'Timesheet';
+          h2.appendChild(timesheet);
+
+          var proj = h2.getElementsByTagName('a')[0].href.replace('todo_lists', 'todo_items/');
+
+          // Todo comments
+          var rows = list.getElementsByTagName('tr');
+
+          for (var x = 0; x < rows.length; x++) {
+            var row = rows[x];
+            var id = row.getElementsByTagName('small')[0].id.split('_');
+
+            var comments = document.createElement('a');
+                comments.href = proj + id[1] + '/comments';
+                comments.className = 'quick_link comments';
+                comments.textContent = 'Comments';
+            row.querySelectorAll('td:last-child')[0].appendChild(comments);
+          }
         }
       }
 
@@ -190,32 +211,6 @@ var Enhance = function(){
       }
     }
   }
-
-  /*
-  // only applies to the to-do overview page
-  if (j('body.todoglobal .todo_list').length > 0) {
-    // Quick links
-    if (config.quickLinks) {
-      j('.todo_list').each(function(){
-        var h2 = j('h2', this);
-
-        // Timesheet
-        var url = j('a', h2).attr('href').replace('todo_lists', 'time_entries');
-        h2.append('<a href="' + url + '" class="quick_link time">Timesheet</a>');
-
-        var proj = j('a', h2).attr('href').replace('todo_lists', 'todo_items/');
-
-        // Todo comments
-        j('tr', this).each(function(){
-          var id = j('small', this).attr('id').split('_');
-          var url = proj + id[1] + '/comments';
-
-          j('td:last-child', this).append('<a href="' + url + '" class="quick_link comments">Comments</a>');
-        });
-      });
-    }
-  }
-  */
 
   // Priorities
   if (config.priorities) {
