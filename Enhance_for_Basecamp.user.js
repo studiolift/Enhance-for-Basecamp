@@ -49,8 +49,62 @@ var Enhance = function(){
 
   document.getElementsByTagName('head')[0].appendChild(style);
 
+  // Helper stuff
   var body = document.getElementsByTagName('body')[0];
 
+
+  Element.prototype.hasClass = function() {
+    if (this.className.indexOf(arguments[0]) != -1) {
+      return true;
+    }
+
+    return false;
+  }
+
+  /*
+   * Show the provided element
+   */
+  Object.prototype.eShow = function() {
+    if (this.isArray() || this.isNodeList()) {
+      for (var i = 0; i < this.length; i++) {
+        this[i].eShow();
+      }
+    } else if (this.hasClass('hidden')) {
+      this.className = this.className.replace(/ hidden/, '');
+    }
+
+    return this;
+  }
+
+  /*
+   * Hide the provided element
+   */
+  Object.prototype.eHide = function() {
+    if (this.isArray() || this.isNodeList()) {
+      for (var i = 0; i < this.length; i++) {
+        this[i].eHide();
+      }
+    } else if (!this.hasClass('hidden')) {
+      this.className += ' hidden';
+    }
+
+    return this;
+  }
+
+  /*
+   * Testing for Arrays and NodeLists
+   */
+  Object.prototype.isArray = function() {
+    return this.constructor == Array;
+  }
+
+  Object.prototype.isNodeList = function() {
+    return this.constructor == NodeList;
+  }
+
+  /*
+   * Now let's add some features!
+   */
   if (body.className.match('.todoglobal')) {
     var todoLists = body.querySelectorAll('.todo_list');
 
@@ -66,9 +120,10 @@ var Enhance = function(){
               minButton.title = 'Collapse';
               minButton.textContent = '-';
               minButton.addEventListener('click', function(e){
-                e.target.parentNode.nextSibling.nextSibling.className += ' hidden';
-                e.target.className += ' hidden';
-                e.target.nextSibling.className = e.target.nextSibling.className.replace(/ hidden/, '');
+                e.target.parentNode.nextSibling.nextSibling.eHide();
+                e.target.eHide()
+                        .nextSibling.eShow();
+
                 e.preventDefault();
               });
 
@@ -77,10 +132,9 @@ var Enhance = function(){
               maxButton.title = 'Expand';
               maxButton.textContent = '+';
               maxButton.addEventListener('click', function(e){
-                var table = e.target.parentNode.nextSibling.nextSibling;
-                table.className = table.className.replace(/ hidden/, '');
-                e.target.className += ' hidden';
-                e.target.previousSibling.className = e.target.previousSibling.className.replace(/ hidden/, '');
+                [e.target.parentNode.nextSibling.nextSibling, e.target.previousSibling].eShow();
+                e.target.eHide();
+
                 e.preventDefault();
               });
 
@@ -92,52 +146,54 @@ var Enhance = function(){
           // todo
         }
       }
+
+      if (config.todoCollapse) {
+        // Expand/Collapse all buttons
+        var inner = body.querySelectorAll('.Full .innercol')[0];
+        var tables = inner.querySelectorAll('.todolist');
+        var minButtons = inner.querySelectorAll('.todo_list .hide');
+        var maxButtons = inner.querySelectorAll('.todo_list .show');
+
+        var collapseButton = document.createElement('button');
+            collapseButton.className = 'hide';
+            collapseButton.textContent = '- Collapse All';
+            collapseButton.addEventListener('click', function(e){
+              [tables, minButtons].eHide();
+              maxButtons.eShow();
+
+              e.target.eHide()
+                      .nextSibling.eShow();
+
+              e.preventDefault();
+            });
+
+        var expandButton = document.createElement('button');
+            expandButton.className = 'show hidden';
+            expandButton.textContent = '+ Expand All';
+            expandButton.addEventListener('click', function(e){
+              [tables, minButtons].eShow();
+              maxButtons.eHide();
+
+              e.target.eHide()
+                      .previousSibling.eShow();
+
+              e.preventDefault();
+            });
+
+        var collapseExpand = document.createElement('div');
+            collapseExpand.id = 'collapse';
+
+        collapseExpand.appendChild(collapseButton);
+        collapseExpand.appendChild(expandButton);
+
+        inner.insertBefore(collapseExpand, inner.firstChild);
+      }
     }
   }
 
   /*
   // only applies to the to-do overview page
   if (j('body.todoglobal .todo_list').length > 0) {
-    // Collapable global todo lists
-    if (config.todoCollapse) {
-      j('h2', '.todo_list').prepend('<button class="hide" title="Collapse">-</button><button class="show" style="display:none" title="Expand">+</button>');
-
-      j('h2 button').click(function(e){
-        var btn = j(this);
-        var parent = btn.closest('h2');
-
-        parent.next('table').toggle();
-        btn.hide()
-           .siblings('button').toggle();
-
-        e.preventDefault();
-      });
-
-      j('.innercol', '.Full').prepend('<div id="collapse"><button class="hide">- Collapse All</button><button class="show" style="display:none">+ Expand All</button></div>');
-
-      j('#collapse button.hide').click(function(e){
-        var btn = j(this);
-
-        j('.todo_list table, .todo_list .hide').hide();
-        j('.todo_list .show').show();
-        btn.hide()
-           .siblings('button').toggle();
-
-        e.preventDefault();
-      });
-
-      j('#collapse button.show').click(function(e){
-        var btn = j(this);
-
-        j('.todo_list table, .todo_list .hide').show();
-        j('.todo_list .show').hide();
-        btn.hide()
-           .siblings('button').toggle();
-
-        e.preventDefault();
-      });
-    }
-
     // Quick links
     if (config.quickLinks) {
       j('.todo_list').each(function(){
