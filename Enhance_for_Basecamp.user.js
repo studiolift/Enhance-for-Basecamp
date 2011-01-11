@@ -295,7 +295,7 @@ var Enhance = function(){
     }
   }
 
-  if (config.forms && body.hasClass('time')) {
+  if (config.forms && body.eHasClass('time')) {
     // Time entry simple time select
     var timeSelect = document.createElement('select');
         timeSelect.name = 'time_entry[hours]';
