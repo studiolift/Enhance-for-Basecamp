@@ -52,7 +52,7 @@ var Enhance = function(){
   // Helper stuff
   var body = document.getElementsByTagName('body')[0];
 
-  Element.prototype.hasClass = function() {
+  Element.prototype.eHasClass = function() {
     if (this.className.indexOf(arguments[0]) != -1) {
       return true;
     }
@@ -68,7 +68,7 @@ var Enhance = function(){
       for (var i = 0; i < this.length; i++) {
         this[i].eShow();
       }
-    } else if (this.hasClass('hidden')) {
+    } else if (this.eHasClass('hidden')) {
       this.className = this.className.replace(/ hidden/, '');
     }
 
@@ -83,7 +83,7 @@ var Enhance = function(){
       for (var i = 0; i < this.length; i++) {
         this[i].eHide();
       }
-    } else if (!this.hasClass('hidden')) {
+    } else if (!this.eHasClass('hidden')) {
       this.className += ' hidden';
     }
 
