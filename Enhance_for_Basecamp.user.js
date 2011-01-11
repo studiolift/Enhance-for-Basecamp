@@ -295,29 +295,39 @@ var Enhance = function(){
     }
   }
 
-  /*if (config.forms && j('body.time').length > 0) {
+  if (config.forms && body.hasClass('time')) {
     // Time entry simple time select
-    var time_select = '<select name="time_entry[hours]" id="time_entry_hours">'
-                    + '<option value="0">0</option>'
-                    + '<option value="0.25">15 mins</option>'
-                    + '<option value="0.50">30 mins</option>'
-                    + '<option value="0.45">45 mins</option>';
+    var timeSelect = document.createElement('select');
+        timeSelect.name = 'time_entry[hours]';
+        timeSelect.id = 'time_entry_hours';
+
+    var option = function(value, label){
+      var opt = document.createElement('option');
+          opt.value = value;
+          opt.textContent = label;
+      return opt;
+    };
+
+    timeSelect.appendChild(option(0, '---'));
+    timeSelect.appendChild(option('0.25', '15 mins'));
+    timeSelect.appendChild(option('0.50', '30 mins'));
+    timeSelect.appendChild(option('0.75', '45 mins'));
 
     for (var i = 1; i <= 8; i++) {
-      time_select = time_select
-                  + '<option value="' + i + '.00">' + i + ' hour' + (i > 1 ? 's' : '') + '</option>'
-                  + '<option value="' + i + '.25">' + i + 'h 15m</option>'
-                  + '<option value="' + i + '.50">' + i + 'h 30m</option>'
-                  + '<option value="' + i + '.45">' + i + 'h 45m</option>'
+      timeSelect.appendChild(option(i + '.00', i + ' hour' + (i > 1 ? 's' : '')));
+      timeSelect.appendChild(option(i + '.25', i + 'h 15m'));
+      timeSelect.appendChild(option(i + '.50', i + 'h 30m'));
+      timeSelect.appendChild(option(i + '.75', i + 'h 45m'));
     }
 
-    time_select = time_select + '</select>';
-
-    j('#time_entry_hours').addClass('remove_me').after(time_select);
-    j('.remove_me').remove();
+    var oldTime = document.getElementById('time_entry_hours');
+        oldTime.className += 'remove_me';
+        oldTime.parentNode.appendChild(timeSelect);
+        oldTime.parentNode.removeChild(oldTime);
+        oldTime = null;
   }
 
-  function filterLists(query) {
+  /*function filterLists(query) {
     j('.todo_list table tr[class]').each(function(){
       if (jQuery.trim(j('td:first-child', this).text()) == query) {
         j(this).toggle();
