@@ -216,7 +216,7 @@ var Enhance = function(){
       }
     }
 
-    // Todo IDs
+    /*// Todo IDs
     if (config.todoIDs) {
       j('.todo_list tr').each(function(){
         var id = j('small', this).attr('id').split('_');
@@ -231,7 +231,7 @@ var Enhance = function(){
         filterLists(j(this).val());
       });
       j('div.page_header_links').attr('style', 'width:600px !important');
-    }
+    }*/
   }
 
   // Priorities
@@ -286,15 +286,16 @@ var Enhance = function(){
 
   // Inline todo ID linking
   if (config.todoIDs) {
-    j('.formatted_text_body p').each(function(){
-      var t = j(this).html();
-      j(this).html(
-        t.replace(/\#([0-9]{1,})/g, '<a href="/todo_items/$1/comments">#$1</a>')
-      );
-    });
+    var paras = body.querySelectorAll('.formatted_text_body p');
+
+    if (paras.length > 0) {
+      for (var i = 0; i < paras.length; i++) {
+        paras[i].innerHTML = paras[i].innerHTML.replace(/\#([0-9]{1,})/g, '<a href="/todo_items/$1/comments">#$1</a>');
+      }
+    }
   }
 
-  if (config.forms && j('body.time').length > 0) {
+  /*if (config.forms && j('body.time').length > 0) {
     // Time entry simple time select
     var time_select = '<select name="time_entry[hours]" id="time_entry_hours">'
                     + '<option value="0">0</option>'
@@ -326,5 +327,5 @@ var Enhance = function(){
         });
       }
     });
-  }
+  }*/
 }();
