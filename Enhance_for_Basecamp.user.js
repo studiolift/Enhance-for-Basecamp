@@ -32,7 +32,6 @@ var config = {
 // ------------------------------------------------------------
 
 var Enhance = function(){
-  var o = 1;
   // Add custom styles
   var style = document.createElement('style');
   style.textContent = [
