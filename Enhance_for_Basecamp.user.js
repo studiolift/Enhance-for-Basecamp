@@ -101,6 +101,41 @@ var Enhance = function(){
     return this.constructor == NodeList;
   }
 
+  function hideTodo(e){
+    e.target.parentNode.nextSibling.nextSibling.eHide();
+    e.target.eHide()
+            .nextSibling.eShow();
+
+    e.preventDefault();
+  }
+
+  function showTodo(e){
+    [e.target.parentNode.nextSibling.nextSibling, e.target.previousSibling].eShow();
+    e.target.eHide();
+
+    e.preventDefault();
+  }
+
+  function hideAllTodo(e){
+    [tables, minButtons].eHide();
+    maxButtons.eShow();
+
+    e.target.eHide()
+            .nextSibling.eShow();
+
+    e.preventDefault();
+  }
+
+  function showAllTodo(e){
+    [tables, minButtons].eShow();
+    maxButtons.eHide();
+
+    e.target.eHide()
+            .previousSibling.eShow();
+
+    e.preventDefault();
+  }
+
   /*
    * Now let's add some features!
    */
@@ -117,24 +152,13 @@ var Enhance = function(){
               minButton.className = 'hide';
               minButton.title = 'Collapse';
               minButton.textContent = '-';
-              minButton.addEventListener('click', function(e){
-                e.target.parentNode.nextSibling.nextSibling.eHide();
-                e.target.eHide()
-                        .nextSibling.eShow();
-
-                e.preventDefault();
-              });
+              minButton.addEventListener('click', hideTodo);
 
           var maxButton = document.createElement('button');
               maxButton.className = 'show hidden';
               maxButton.title = 'Expand';
               maxButton.textContent = '+';
-              maxButton.addEventListener('click', function(e){
-                [e.target.parentNode.nextSibling.nextSibling, e.target.previousSibling].eShow();
-                e.target.eHide();
-
-                e.preventDefault();
-              });
+              maxButton.addEventListener('click', showTodo);
 
           h2.insertBefore(maxButton, h2.firstChild);
           h2.insertBefore(minButton, maxButton);
@@ -177,28 +201,12 @@ var Enhance = function(){
         var collapseButton = document.createElement('button');
             collapseButton.className = 'hide';
             collapseButton.textContent = '- Collapse All';
-            collapseButton.addEventListener('click', function(e){
-              [tables, minButtons].eHide();
-              maxButtons.eShow();
-
-              e.target.eHide()
-                      .nextSibling.eShow();
-
-              e.preventDefault();
-            });
+            collapseButton.addEventListener('click', hideAllTodo);
 
         var expandButton = document.createElement('button');
             expandButton.className = 'show hidden';
             expandButton.textContent = '+ Expand All';
-            expandButton.addEventListener('click', function(e){
-              [tables, minButtons].eShow();
-              maxButtons.eHide();
-
-              e.target.eHide()
-                      .previousSibling.eShow();
-
-              e.preventDefault();
-            });
+            expandButton.addEventListener('click', showAllTodo);
 
         var collapseExpand = document.createElement('div');
             collapseExpand.id = 'collapse';
