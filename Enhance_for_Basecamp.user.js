@@ -58,6 +58,9 @@ var Enhance = function(){
   // Helper stuff
   var body = document.getElementsByTagName('body')[0];
 
+  /*
+   * Check if the provided element has a specific class
+   */
   function eHasClass(target, search) {
     if (target.className.indexOf(search) != -1) {
       return true;
@@ -74,7 +77,7 @@ var Enhance = function(){
       for (var i = 0; i < target.length; i++) {
         eShow(target[i]);
       }
-    } else if (eHasClass(target, 'hidden')) {
+    } else if (target instanceof Element && eHasClass(target, 'hidden')) {
       target.className = target.className.replace(/ hidden/, '');
     }
   }
@@ -87,7 +90,7 @@ var Enhance = function(){
       for (var i = 0; i < target.length; i++) {
         eHide(target[i]);
       }
-    } else if (!eHasClass(target, 'hidden')) {
+    } else if (target instanceof Element && !eHasClass(target, 'hidden')) {
       target.className += ' hidden';
     }
   }
@@ -103,6 +106,9 @@ var Enhance = function(){
     return target.constructor == NodeList;
   }
 
+  /*
+   * Hide/show event handler for todo collapsing
+   */
   function hideTodo(e){
     eHide([e.target.parentNode.nextSibling.nextSibling, e.target]);
     eShow(e.target.nextSibling);
@@ -129,6 +135,44 @@ var Enhance = function(){
     eHide([maxButtons, e.target]);
 
     e.preventDefault();
+  }
+
+  /*
+   * Hide show event handler for todo filtering
+   */
+  function filterLists(e) {
+    var rows = body.querySelectorAll('.todo_list table tr[class]:not([class=" hidden"])');
+    var affected = [];
+
+    for (var i = 0; i < rows.length; i++) {
+      var row = rows[i];
+
+      if (row.textContent.indexOf(e.target.value) != -1) {
+        affected.push(row);
+
+        if (row.nextSibling) {
+          affected = getSimilarRows(row.nextSibling, affected);
+        }
+      }
+    }
+
+    if (e.target.checked) {
+      eShow(affected);
+    } else {
+      eHide(affected);
+    }
+  }
+
+  function getSimilarRows(el, ar) {
+    if (!el.className || el.className == ' hidden') {
+      ar.push(el);
+
+      if (el.nextSibling) {
+        return getSimilarRows(el.nextSibling, ar);
+      }
+    }
+
+    return ar;
   }
 
   /*
@@ -187,6 +231,7 @@ var Enhance = function(){
               row.querySelectorAll('td:last-child')[0].appendChild(comments);
             }
 
+            // Todo IDs
             if (config.todoIDs) {
               var visibleId = document.createElement('span');
                   visibleId.className = 'todo_id';
@@ -224,15 +269,68 @@ var Enhance = function(){
       }
     }
 
-    /*// Todo IDs
     // Filters
     if (config.filters) {
-      j('#responsible_party_form').append('<div id="filters"><label for="onhold"><input type="checkbox" name="onhold" id="onhold" value="On hold" checked="checked"/> On hold</label><label for="active"><input type="checkbox" name="active" id="active" value="Active" checked="checked"/> Active</label><label for="new"><input type="checkbox" name="new" id="new" value="New" checked="checked"/> New</label></div>');
-      j('#filters input:checkbox').click(function(e){
-        filterLists(j(this).val());
-      });
-      j('div.page_header_links').attr('style', 'width:600px !important');
-    }*/
+      // Containing div
+      var filters = document.createElement('div');
+          filters.id = 'filters';
+
+      // On hold
+      var onHold = document.createElement('label');
+          onHold.setAttribute('for', 'onhold');
+          onHold.textContent = 'On hold';
+
+      var onHoldInput = document.createElement('input');
+          onHoldInput.type = 'checkbox';
+          onHoldInput.name = 'onhold';
+          onHoldInput.id = 'onhold';
+          onHoldInput.value = 'On hold';
+          onHoldInput.checked = 'checked';
+          onHoldInput.addEventListener('click', filterLists);
+
+      onHold.insertBefore(onHoldInput, onHold.childNodes[0]);
+
+      // Active
+      var active = document.createElement('label');
+          active.setAttribute('for', 'active');
+          active.textContent = 'Active';
+
+      var activeInput = document.createElement('input');
+          activeInput.type = 'checkbox';
+          activeInput.name = 'active';
+          activeInput.id = 'active';
+          activeInput.value = 'Active';
+          activeInput.checked = 'checked';
+          activeInput.addEventListener('click', filterLists);
+
+      active.insertBefore(activeInput, active.childNodes[0]);
+
+      // New - named newOpt to avoid keyword
+      var newOpt = document.createElement('label');
+          newOpt.setAttribute('for', 'new');
+          newOpt.textContent = 'New';
+
+      var newInput = document.createElement('input');
+          newInput.type = 'checkbox';
+          newInput.name = 'new';
+          newInput.id = 'new';
+          newInput.value = 'New';
+          newInput.checked = 'checked';
+          newInput.addEventListener('click', filterLists);
+
+      newOpt.insertBefore(newInput, newOpt.childNodes[0]);
+
+      filters.appendChild(onHold);
+      filters.appendChild(active);
+      filters.appendChild(newOpt);
+
+      // Drop in the filters
+      var responsible = document.getElementById('responsible_party_form');
+      responsible.appendChild(filters);
+
+      // Forcing style
+      body.querySelector('div.page_header_links').setAttribute('style', 'width:600px !important');
+    }
   }
 
   // Priorities
@@ -296,7 +394,7 @@ var Enhance = function(){
     }
   }
 
-  if (config.forms && body.eHasClass('time')) {
+  if (config.forms && eHasClass(body, 'time')) {
     // Time entry simple time select
     var timeSelect = document.createElement('select');
         timeSelect.name = 'time_entry[hours]';
@@ -327,16 +425,4 @@ var Enhance = function(){
         oldTime.parentNode.removeChild(oldTime);
         oldTime = null;
   }
-
-  /*function filterLists(query) {
-    j('.todo_list table tr[class]').each(function(){
-      if (jQuery.trim(j('td:first-child', this).text()) == query) {
-        j(this).toggle();
-
-        j(this).nextUntil('tr[class]').each(function(){
-          j(this).toggle();
-        });
-      }
-    });
-  }*/
 }();
