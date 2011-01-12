@@ -160,15 +160,17 @@ var Enhance = function(){
         }
 
         // Quick links
-        if (config.quickLinks) {
-          // Timesheet
-          var timesheet = document.createElement('a');
-              timesheet.href = h2.getElementsByTagName('a')[0].href.replace('todo_lists', 'time_entries');
-              timesheet.className = 'quick_link time';
-              timesheet.textContent = 'Timesheet';
-          h2.appendChild(timesheet);
+        if (config.quickLinks || config.todoIDs) {
+          var proj = h2.getElementsByTagName('a')[0].href.replace('todo_lists', '');
 
-          var proj = h2.getElementsByTagName('a')[0].href.replace('todo_lists', 'todo_items/');
+          if (config.quickLinks) {
+            // Timesheet
+            var timesheet = document.createElement('a');
+                timesheet.href = proj + 'time_entries';
+                timesheet.className = 'quick_link time';
+                timesheet.textContent = 'Timesheet';
+            h2.appendChild(timesheet);
+          }
 
           // Todo comments
           var rows = list.getElementsByTagName('tr');
@@ -177,11 +179,20 @@ var Enhance = function(){
             var row = rows[x];
             var id = row.getElementsByTagName('small')[0].id.split('_');
 
-            var comments = document.createElement('a');
-                comments.href = proj + id[1] + '/comments';
-                comments.className = 'quick_link comments';
-                comments.textContent = 'Comments';
-            row.querySelectorAll('td:last-child')[0].appendChild(comments);
+            if (config.quickLinks) {
+              var comments = document.createElement('a');
+                  comments.href = proj + 'todo_items/' + id[1] + '/comments';
+                  comments.className = 'quick_link comments';
+                  comments.textContent = 'Comments';
+              row.querySelectorAll('td:last-child')[0].appendChild(comments);
+            }
+
+            if (config.todoIDs) {
+              var visibleId = document.createElement('span');
+                  visibleId.className = 'todo_id';
+                  visibleId.textContent = '[#' + id[1] + ']';
+              row.querySelectorAll('td:last-child .content')[0].appendChild(visibleId);
+            }
           }
         }
       }
@@ -214,13 +225,6 @@ var Enhance = function(){
     }
 
     /*// Todo IDs
-    if (config.todoIDs) {
-      j('.todo_list tr').each(function(){
-        var id = j('small', this).attr('id').split('_');
-        j('td:last-child .content', this).after('<span class="todo_id">[#' + id[1] + ']</span>');
-      });
-    }
-
     // Filters
     if (config.filters) {
       j('#responsible_party_form').append('<div id="filters"><label for="onhold"><input type="checkbox" name="onhold" id="onhold" value="On hold" checked="checked"/> On hold</label><label for="active"><input type="checkbox" name="active" id="active" value="Active" checked="checked"/> Active</label><label for="new"><input type="checkbox" name="new" id="new" value="New" checked="checked"/> New</label></div>');
