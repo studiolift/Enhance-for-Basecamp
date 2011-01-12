@@ -58,8 +58,8 @@ var Enhance = function(){
   // Helper stuff
   var body = document.getElementsByTagName('body')[0];
 
-  Element.prototype.eHasClass = function() {
-    if (this.className.indexOf(arguments[0]) != -1) {
+  function eHasClass(target, search) {
+    if (target.className.indexOf(search) != -1) {
       return true;
     }
 
@@ -69,48 +69,72 @@ var Enhance = function(){
   /*
    * Show the provided element
    */
-  Object.prototype.eShow = function() {
-    if (this.isArray() || this.isNodeList()) {
-      for (var i = 0; i < this.length; i++) {
-        this[i].eShow();
+  function eShow(target) {
+    if (isArray(target) || isNodeList(target)) {
+      for (var i = 0; i < target.length; i++) {
+        eShow(target[i]);
       }
-    } else if (this.eHasClass('hidden')) {
-      this.className = this.className.replace(/ hidden/, '');
+    } else if (eHasClass(target, 'hidden')) {
+      target.className = target.className.replace(/ hidden/, '');
     }
-
-    return this;
   }
 
   /*
    * Hide the provided element
    */
-  Object.prototype.eHide = function() {
-    if (this.isArray() || this.isNodeList()) {
-      for (var i = 0; i < this.length; i++) {
-        this[i].eHide();
+   function eHide(target) {
+    if (isArray(target) || isNodeList(target)) {
+      for (var i = 0; i < target.length; i++) {
+        eHide(target[i]);
       }
-    } else if (!this.eHasClass('hidden')) {
-      this.className += ' hidden';
+    } else if (!eHasClass(target, 'hidden')) {
+      target.className += ' hidden';
     }
-
-    return this;
   }
 
   /*
    * Testing for Arrays and NodeLists
    */
-  Object.prototype.isArray = function() {
-    return this.constructor == Array;
+  function isArray(target) {
+    return target.constructor == Array;
   }
 
-  Object.prototype.isNodeList = function() {
-    return this.constructor == NodeList;
+  function isNodeList(target) {
+    return target.constructor == NodeList;
+  }
+
+  function hideTodo(e){
+    eHide([e.target.parentNode.nextSibling.nextSibling, e.target]);
+    eShow(e.target.nextSibling);
+
+    e.preventDefault();
+  }
+
+  function showTodo(e){
+    eShow([e.target.parentNode.nextSibling.nextSibling, e.target.previousSibling]);
+    eHide(e.target);
+
+    e.preventDefault();
+  }
+
+  function hideAllTodo(e){
+    eHide([tables, minButtons, e.target]);
+    eShow([maxButtons, e.target.nextSibling]);
+
+    e.preventDefault();
+  }
+
+  function showAllTodo(e){
+    eShow([tables, minButtons, e.target.previousSibling]);
+    eHide([maxButtons, e.target]);
+
+    e.preventDefault();
   }
 
   /*
    * Now let's add some features!
    */
-  if (body.className.match('.todoglobal')) {
+  if (eHasClass(body, 'todoglobal')) {
     var todoLists = body.querySelectorAll('.todo_list');
 
     if (todoLists.length > 0) {
@@ -123,24 +147,13 @@ var Enhance = function(){
               minButton.className = 'hide';
               minButton.title = 'Collapse';
               minButton.textContent = '-';
-              minButton.addEventListener('click', function(e){
-                e.target.parentNode.nextSibling.nextSibling.eHide();
-                e.target.eHide()
-                        .nextSibling.eShow();
-
-                e.preventDefault();
-              });
+              minButton.addEventListener('click', hideTodo);
 
           var maxButton = document.createElement('button');
               maxButton.className = 'show hidden';
               maxButton.title = 'Expand';
               maxButton.textContent = '+';
-              maxButton.addEventListener('click', function(e){
-                [e.target.parentNode.nextSibling.nextSibling, e.target.previousSibling].eShow();
-                e.target.eHide();
-
-                e.preventDefault();
-              });
+              maxButton.addEventListener('click', showTodo);
 
           h2.insertBefore(maxButton, h2.firstChild);
           h2.insertBefore(minButton, maxButton);
@@ -183,28 +196,12 @@ var Enhance = function(){
         var collapseButton = document.createElement('button');
             collapseButton.className = 'hide';
             collapseButton.textContent = '- Collapse All';
-            collapseButton.addEventListener('click', function(e){
-              [tables, minButtons].eHide();
-              maxButtons.eShow();
-
-              e.target.eHide()
-                      .nextSibling.eShow();
-
-              e.preventDefault();
-            });
+            collapseButton.addEventListener('click', hideAllTodo);
 
         var expandButton = document.createElement('button');
             expandButton.className = 'show hidden';
             expandButton.textContent = '+ Expand All';
-            expandButton.addEventListener('click', function(e){
-              [tables, minButtons].eShow();
-              maxButtons.eHide();
-
-              e.target.eHide()
-                      .previousSibling.eShow();
-
-              e.preventDefault();
-            });
+            expandButton.addEventListener('click', showAllTodo);
 
         var collapseExpand = document.createElement('div');
             collapseExpand.id = 'collapse';
@@ -269,7 +266,7 @@ var Enhance = function(){
     // Separating pipe
     var separator = document.createElement('span');
         separator.className = 'pipe';
-        separator.textContent = '\|';
+        separator.textContent = '|';
 
     // The actual link
     var overviewLink = document.createElement('a');
