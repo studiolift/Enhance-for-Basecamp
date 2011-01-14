@@ -175,14 +175,14 @@ var Enhance = function(){
                 comments.href = proj + id[1] + '/comments';
                 comments.className = 'quick_link comments';
                 comments.textContent = 'Comments';
-            row.querySelectorAll('td:last-child')[0].appendChild(comments);
+            row.querySelector('td:last-child').appendChild(comments);
           }
         }
       }
 
       if (config.todoCollapse) {
         // Expand/Collapse all buttons
-        var inner = body.querySelectorAll('.Full .innercol')[0];
+        var inner = body.querySelector('.Full .innercol');
         var tables = inner.querySelectorAll('.todolist');
         var minButtons = inner.querySelectorAll('.todo_list .hide');
         var maxButtons = inner.querySelectorAll('.todo_list .show');
