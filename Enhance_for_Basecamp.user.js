@@ -228,7 +228,7 @@ var Enhance = function(){
                   comments.href = proj + 'todo_items/' + id[1] + '/comments';
                   comments.className = 'quick_link comments';
                   comments.textContent = 'Comments';
-              row.querySelectorAll('td:last-child')[0].appendChild(comments);
+              row.querySelector('td:last-child').appendChild(comments);
             }
 
             // Todo IDs
@@ -236,7 +236,7 @@ var Enhance = function(){
               var visibleId = document.createElement('span');
                   visibleId.className = 'todo_id';
                   visibleId.textContent = '[#' + id[1] + ']';
-              row.querySelectorAll('td:last-child .content')[0].appendChild(visibleId);
+              row.querySelector('td:last-child .content').appendChild(visibleId);
             }
           }
         }
@@ -244,7 +244,7 @@ var Enhance = function(){
 
       if (config.todoCollapse) {
         // Expand/Collapse all buttons
-        var inner = body.querySelectorAll('.Full .innercol')[0];
+        var inner = body.querySelector('.Full .innercol');
         var tables = inner.querySelectorAll('.todolist');
         var minButtons = inner.querySelectorAll('.todo_list .hide');
         var maxButtons = inner.querySelectorAll('.todo_list .show');
@@ -339,26 +339,10 @@ var Enhance = function(){
 
     for (var i = 0; i < todos.length; i++) {
       var todo = todos[i];
-      var t = todo.textContent.match(/\[(HOT|WARM|COLD)\]/g);
+      var t = todo.textContent.match(/\[(HOT|WARM|COLD)(?=\])/g);
 
       if (t) {
-        var classSuffix = false;
-
-        switch (t[0]) {
-          case '[COLD]':
-            classSuffix = 'cold';
-            break;
-          case '[WARM]':
-            classSuffix = 'warm';
-            break;
-          case '[HOT]':
-            classSuffix = 'hot';
-            break;
-        }
-
-        if (classSuffix) {
-          todo.className += ' todo_' + classSuffix;
-        }
+        todo.className += ' todo_' + t[0].substr(1,4).toLowerCase();
       }
     }
   }
