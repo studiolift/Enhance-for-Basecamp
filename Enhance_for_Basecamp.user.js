@@ -214,26 +214,10 @@ var Enhance = function(){
 
     for (var i = 0; i < todos.length; i++) {
       var todo = todos[i];
-      var t = todo.textContent.match(/\[(HOT|WARM|COLD)\]/g);
+      var t = todo.textContent.match(/\[(HOT|WARM|COLD)(?=\])/g);
 
       if (t) {
-        var classSuffix = false;
-
-        switch (t[0]) {
-          case '[COLD]':
-            classSuffix = 'cold';
-            break;
-          case '[WARM]':
-            classSuffix = 'warm';
-            break;
-          case '[HOT]':
-            classSuffix = 'hot';
-            break;
-        }
-
-        if (classSuffix) {
-          todo.className += ' todo_' + classSuffix;
-        }
+        todo.className += ' todo_' + t[0].substr(1,4).toLowerCase();
       }
     }
   }
