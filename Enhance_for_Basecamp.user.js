@@ -42,6 +42,7 @@ var Enhance = function(){
     '#collapse button { width:85px; padding:0 5px; text-align:left; }',
     'h2 button:hover, #collapse button:hover { background-color:#FFF; cursor:pointer; }',
     '.priority { color:#fff; display:inline-block; padding:3px; font-size:0.8em; line-height:1.3em; text-transform:uppercase; margin-right:3px; border-radius:4px; width:31px; text-align:center; }',
+    '.page_header .content .item .priority { width:45px; }',
     '.todo_cold { background-color:' + config.colours.cold + '; }',
     '.todo_warm { background-color:' + config.colours.warm + '; }',
     '.todo_hot { background-color:' + config.colours.hot + '; }',
