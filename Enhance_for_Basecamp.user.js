@@ -41,9 +41,10 @@ var Enhance = function(){
     'h2 button, #collapse button { background-color:#EEE; border:solid 1px #CCC; margin-left:-5px; width:17px; height:16px; text-align:center; line-height:14px; padding:0; position:relative; top:-2px; }',
     '#collapse button { width:85px; padding:0 5px; text-align:left; }',
     'h2 button:hover, #collapse button:hover { background-color:#FFF; cursor:pointer; }',
-    '.todo_cold { color:' + config.colours.cold + '; }',
-    '.todo_warm { color:' + config.colours.warm + '; }',
-    '.todo_hot { color:' + config.colours.hot + '; }',
+    '.priority { color:#fff; display:inline-block; padding:3px; font-size:0.8em; line-height:1.3em; text-transform:uppercase; margin-right:3px; border-radius:4px; width:31px; text-align:center; }',
+    '.todo_cold { background-color:' + config.colours.cold + '; }',
+    '.todo_warm { background-color:' + config.colours.warm + '; }',
+    '.todo_hot { background-color:' + config.colours.hot + '; }',
     '.hidden { display:none; }'
   ].join('\n');
 
@@ -217,7 +218,13 @@ var Enhance = function(){
       var t = todo.textContent.match(/\[(HOT|WARM|COLD)(?=\])/g);
 
       if (t) {
-        todo.className += ' todo_' + t[0].substr(1,4).toLowerCase();
+        var r = todo.innerHTML;
+        todo.innerHTML = r.replace(t[0] + '] ', '');
+        t = t[0].substr(1,4).toLowerCase();
+        var todoPriority = document.createElement('span');
+            todoPriority.textContent = t;
+            todoPriority.className = 'priority todo_' + t;
+        todo.insertBefore(todoPriority, todo.firstChild);
       }
     }
   }
