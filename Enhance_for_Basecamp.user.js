@@ -110,7 +110,7 @@ if (window.fluid) memory = (function () {
 // ------------------------------------------------------------
 // Configuration
 // ------------------------------------------------------------
-var config = memory.getItem('enhance') || {
+var config = memory.getItem('enhanceConfig') || {
   todoCollapse: true, // Adds a handy button to collapse to-do lists on the overview
   quickLinks: true,   // Adds quick links to the overview for timesheets and to-do comments
   priorities: true,   // Add colour coded priorities to to-dos: prefix with [HOT], [WARM] or [COLD]
