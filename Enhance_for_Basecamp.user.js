@@ -10,19 +10,120 @@
 // @homepage    http://twitter.com/akamike
 // ==/UserScript==
 
+var memory = window.localStorage;
+
+// ------------------------------------------------------------
+// Storage by Remy Sharp - https://gist.github.com/350433
+// Used because Fluid forgets things when you close the app
+// ------------------------------------------------------------
+
+if (window.fluid) memory = (function () {
+  var Storage = function (type) {
+    function createCookie(name, value, days) {
+      var date, expires;
+  
+      if (days) {
+        date = new Date();
+        date.setTime(date.getTime()+(days*24*60*60*1000));
+        expires = "; expires="+date.toGMTString();
+      } else {
+        expires = "";
+      }
+      document.cookie = name+"="+value+expires+"; path=/";
+    }
+  
+    function readCookie(name) {
+      var nameEQ = name + "=",
+          ca = document.cookie.split(';'),
+          i, c;
+  
+      for (i=0; i < ca.length; i++) {
+        c = ca[i];
+        while (c.charAt(0)==' ') {
+          c = c.substring(1,c.length);
+        }
+  
+        if (c.indexOf(nameEQ) == 0) {
+          return c.substring(nameEQ.length,c.length);
+        }
+      }
+      return null;
+    }
+    
+    function setData(data) {
+      data = JSON.stringify(data);
+      if (type == 'session') {
+        window.name = data;
+      } else {
+        createCookie('localStorage', data, 365);
+      }
+    }
+    
+    function clearData() {
+      if (type == 'session') {
+        window.name = '';
+      } else {
+        createCookie('localStorage', '', 365);
+      }
+    }
+    
+    function getData() {
+      var data = type == 'session' ? window.name : readCookie('localStorage');
+      return data ? JSON.parse(data) : {};
+    }
+  
+  
+    // initialise if there's already data
+    var data = getData();
+  
+    return {
+      clear: function () {
+        data = {};
+        clearData();
+      },
+      getItem: function (key) {
+        return data[key] === undefined ? null : data[key];
+      },
+      key: function (i) {
+        // not perfect, but works
+        var ctr = 0;
+        for (var k in data) {
+          if (ctr == i) return k;
+          else ctr++;
+        }
+        return null;
+      },
+      removeItem: function (key) {
+        delete data[key];
+        setData(data);
+      },
+      setItem: function (key, value) {
+        data[key] = value+''; // forces the value to a string
+        setData(data);
+      }
+    };
+  };
+  
+  return new Storage('local');
+})();
+
 // ------------------------------------------------------------
 // Configuration
 // ------------------------------------------------------------
-var config = {
-  'todoCollapse': true, // Adds a handy button to collapse to-do lists on the overview
-  'quickLinks': true,   // Adds quick links to the overview for timesheets and to-do comments
-  'priorities': true,   // Add colour coded priorities to to-dos: prefix with [HOT], [WARM] or [COLD]
-  'colours': {          // colours for prioritised to-dos
-    'hot': '#C00400',   // #C00400
-    'warm': '#D96B00',  // #D96B00
-    'cold': '#5BB0F2'   // #5BB0F2
+var config = memory.getItem('enhance') || {
+  todoCollapse: true, // Adds a handy button to collapse to-do lists on the overview
+  quickLinks: true,   // Adds quick links to the overview for timesheets and to-do comments
+  priorities: true,   // Add colour coded priorities to to-dos: prefix with [HOT], [WARM] or [COLD]
+  colours: {          // colours for prioritised to-dos
+    hot: '#C00400',   // #C00400
+    warm: '#D96B00',  // #D96B00
+    cold: '#5BB0F2'   // #5BB0F2
   }
 };
+
+if (config.constructor == String) {
+  config = JSON.parse(config);
+}
 
 // ------------------------------------------------------------
 // Enhance!
