@@ -111,13 +111,13 @@ if (window.fluid) memory = (function () {
 // Configuration
 // ------------------------------------------------------------
 var config = memory.getItem('enhanceConfig') || {
-  todoCollapse: true, // Adds a handy button to collapse to-do lists on the overview
-  quickLinks: true,   // Adds quick links to the overview for timesheets and to-do comments
-  priorities: true,   // Add colour coded priorities to to-dos: prefix with [HOT], [WARM] or [COLD]
-  colours: {          // colours for prioritised to-dos
-    hot: '#C00400',   // #C00400
-    warm: '#D96B00',  // #D96B00
-    cold: '#5BB0F2'   // #5BB0F2
+  todoCollapse: true,
+  quickLinks: true,
+  priorities: true,
+  colours: {
+    hot: 'C00400',
+    warm: 'D96B00',
+    cold: '5BB0F2'
   }
 };
 
@@ -144,9 +144,9 @@ var Enhance = function(){
     'h2 button:hover, #collapse button:hover { background-color:#FFF; cursor:pointer; }',
     '.priority { color:#fff; display:inline-block; padding:3px; font-size:0.8em; line-height:1.3em; text-transform:uppercase; margin-right:3px; border-radius:4px; width:31px; text-align:center; }',
     '.page_header .content .item .priority { width:45px; }',
-    '.todo_cold { background-color:' + config.colours.cold + '; }',
-    '.todo_warm { background-color:' + config.colours.warm + '; }',
-    '.todo_hot { background-color:' + config.colours.hot + '; }',
+    '.todo_cold { background-color:#' + config.colours.cold + '; }',
+    '.todo_warm { background-color:#' + config.colours.warm + '; }',
+    '.todo_hot { background-color:#' + config.colours.hot + '; }',
     '.hidden { display:none; }'
   ].join('\n');
 
