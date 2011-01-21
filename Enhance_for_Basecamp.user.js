@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        Enhance! for Basecamp
-// @description Adds various enhancements to Basecamp, includeing collapsable to-do lists, priority colouring and quick links
+// @description Adds various enhancements to Basecamp, including collapsable to-do lists, priority colouring and quick links
 // @include     http://basecamphq.com/*
 // @include     https://basecamphq.com/*
 // @include     http://*.basecamphq.com/*
