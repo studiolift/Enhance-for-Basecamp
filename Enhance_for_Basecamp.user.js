@@ -107,23 +107,55 @@ if (window.fluid) memory = (function () {
   return new Storage('local');
 })();
 
+/*
+ * Load a specific set of localStorage data and parse it
+ */
+function getData(ns) {
+  var data = memory.getItem(ns) || false;
+  if (data.constructor == String) data = JSON.parse(data);
+  
+  return data;
+}
+
+/*
+ * Load config
+ */
+function getConfig() {
+  return getData('config') || {
+    todoCollapse: true,
+    quickLinks: true,
+    priorities: true,
+    colours: {
+      hot: 'C00400',
+      warm: 'D96B00',
+      cold: '5BB0F2'
+    }
+  };
+}
+
+/*
+ * Load state
+ */
+function getOverview() {
+  return getData('overview') || {};
+}
+
+function setData(ns, obj) {
+  memory.setItem(ns, JSON.stringify(obj));
+}
+
+function setConfig(obj) {
+  setData('config', obj);
+}
+
+function setOverview(obj) {
+  setData('overview', obj);
+}
+
 // ------------------------------------------------------------
 // Configuration
 // ------------------------------------------------------------
-var config = memory.getItem('enhanceConfig') || {
-  todoCollapse: true,
-  quickLinks: true,
-  priorities: true,
-  colours: {
-    hot: 'C00400',
-    warm: 'D96B00',
-    cold: '5BB0F2'
-  }
-};
-
-if (config.constructor == String) {
-  config = JSON.parse(config);
-}
+var config = getConfig();
 
 // ------------------------------------------------------------
 // Enhance!
@@ -162,7 +194,7 @@ var Enhance = function(){
   function saveOverviewState() {
     var collapsed = body.querySelectorAll('.todo .hide.hidden'),
         toSave = [],
-        state = memory.getItem('enhanceOverview') || {};
+        state = getOverview();
     
     if (collapsed) {
       for (var i = 0; i < collapsed.length; i++) {
@@ -170,12 +202,8 @@ var Enhance = function(){
       }
     }
     
-    if (state.constructor == String) {
-      state = JSON.parse(state);
-    }
-    
     state.collapse = toSave;
-    memory.setItem('enhanceOverview', JSON.stringify(state));
+    setOverview(state);
   }
 
   function eHasClass(target, search) {
@@ -227,32 +255,24 @@ var Enhance = function(){
     eHide([e.target.parentNode.nextSibling.nextSibling, e.target]);
     eShow(e.target.nextSibling);
     saveOverviewState();
-
-    e.preventDefault();
   }
 
   function showTodo(e){
     eShow([e.target.parentNode.nextSibling.nextSibling, e.target.previousSibling]);
     eHide(e.target);
     saveOverviewState();
-
-    e.preventDefault();
   }
 
   function hideAllTodo(e){
     eHide([tables, minButtons, e.target]);
     eShow([maxButtons, e.target.nextSibling]);
     saveOverviewState();
-
-    e.preventDefault();
   }
 
   function showAllTodo(e){
     eShow([tables, minButtons, e.target.previousSibling]);
     eHide([maxButtons, e.target]);
     saveOverviewState();
-
-    e.preventDefault();
   }
 
   /*
@@ -276,12 +296,12 @@ var Enhance = function(){
           minButton.className = 'hide';
           minButton.title = 'Collapse';
           minButton.textContent = '-';
-          minButton.addEventListener('click', hideTodo);
+          minButton.onclick = hideTodo;
 
           maxButton.className = 'show hidden';
           maxButton.title = 'Expand';
           maxButton.textContent = '+';
-          maxButton.addEventListener('click', showTodo);
+          maxButton.onclick = showTodo;
 
           h2.insertBefore(maxButton, h2.firstChild);
           h2.insertBefore(minButton, maxButton);
@@ -323,15 +343,15 @@ var Enhance = function(){
             collapseButton = document.createElement('button'),
             expandButton = document.createElement('button'),
             collapseExpand = document.createElement('div'),
-            state = memory.getItem('enhanceOverview') || {};
+            state = getOverview();
             
         collapseButton.className = 'hide';
         collapseButton.textContent = '- Collapse All';
-        collapseButton.addEventListener('click', hideAllTodo);
+        collapseButton.onclick = hideAllTodo;
 
         expandButton.className = 'show hidden';
         expandButton.textContent = '+ Expand All';
-        expandButton.addEventListener('click', showAllTodo);
+        expandButton.onclick = showAllTodo;
 
         collapseExpand.id = 'collapse';
 
@@ -341,10 +361,6 @@ var Enhance = function(){
         inner.insertBefore(collapseExpand, inner.firstChild);
         
         // Set up default state
-        if (state.constructor == String) {
-          state = JSON.parse(state);
-        }
-        
         if (state.collapse) {
           for (var i = 0; i < state.collapse.length; i++) {
             var list = document.getElementById('project_' + state.collapse[i]);
