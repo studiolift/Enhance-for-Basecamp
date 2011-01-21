@@ -10,7 +10,10 @@
 // @homepage    http://twitter.com/akamike
 // ==/UserScript==
 
-var memory = window.localStorage;
+var body = document.getElementsByTagName('body')[0],
+    var memory = window.localStorage,
+    config = getConfig(),
+    style = document.createElement('style');
 
 // ------------------------------------------------------------
 // Storage by Remy Sharp - https://gist.github.com/350433
@@ -243,11 +246,7 @@ function showAllTodo(e){
 // Enhance!
 // ------------------------------------------------------------
 
-// Add custom styles
-var body = document.getElementsByTagName('body')[0],
-    config = getConfig(),
-    style = document.createElement('style');
-    
+// Add custom styles    
 style.textContent = [
   '.quick_link { font-size:11px; font-weight:normal; text-decoration:none; background:transparent url(https://asset0.basecamphq.com/images/basecamp_sprites.png) no-repeat 0 0; width:17px; text-indent:-9999px; display:inline-block; line-height:17px; visibility:hidden; }',
   '.todo_list:hover h2 .quick_link, tr:hover .quick_link { visibility:visible; }',
