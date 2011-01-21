@@ -154,6 +154,29 @@ var Enhance = function(){
 
   // Helper stuff
   var body = document.getElementsByTagName('body')[0];
+  
+  /*
+   * Stores the current state of the overview collapse state
+   */
+  function saveOverviewState() {
+    var collapsed = body.querySelectorAll('.todo .hide.hidden');
+    var toSave = [];
+    
+    if (collapsed) {
+      for (var i = 0; i < collapsed.length; i++) {
+        toSave.push(collapsed[i].parentNode.id.replace('project_', ''));
+      }
+    }
+    
+    var state = memory.getItem('enhanceOverview') || {};
+    
+    if (state.constructor == String) {
+      state = JSON.parse(state);
+    }
+    
+    state.collapse = toSave;
+    memory.setItem('enhanceOverview', JSON.stringify(state));
+  }
 
   function eHasClass(target, search) {
     if (target.className.indexOf(search) != -1) {
@@ -203,6 +226,7 @@ var Enhance = function(){
   function hideTodo(e){
     eHide([e.target.parentNode.nextSibling.nextSibling, e.target]);
     eShow(e.target.nextSibling);
+    saveOverviewState();
 
     e.preventDefault();
   }
@@ -210,6 +234,7 @@ var Enhance = function(){
   function showTodo(e){
     eShow([e.target.parentNode.nextSibling.nextSibling, e.target.previousSibling]);
     eHide(e.target);
+    saveOverviewState();
 
     e.preventDefault();
   }
@@ -217,6 +242,7 @@ var Enhance = function(){
   function hideAllTodo(e){
     eHide([tables, minButtons, e.target]);
     eShow([maxButtons, e.target.nextSibling]);
+    saveOverviewState();
 
     e.preventDefault();
   }
@@ -224,6 +250,7 @@ var Enhance = function(){
   function showAllTodo(e){
     eShow([tables, minButtons, e.target.previousSibling]);
     eHide([maxButtons, e.target]);
+    saveOverviewState();
 
     e.preventDefault();
   }
@@ -238,6 +265,9 @@ var Enhance = function(){
       for (var i = 0; i < todoLists.length; i++) {
         var list = todoLists[i];
         var h2 = list.getElementsByTagName('h2')[0];
+        var projectId = h2.getElementsByTagName('a')[0].href.split('/')[4];
+        
+        h2.id = 'project_' + projectId;
 
         if (config.todoCollapse) {
           var minButton = document.createElement('button');
@@ -307,6 +337,21 @@ var Enhance = function(){
         collapseExpand.appendChild(expandButton);
 
         inner.insertBefore(collapseExpand, inner.firstChild);
+        
+        var state = memory.getItem('enhanceOverview') || {};
+        if (state.constructor == String) {
+          state = JSON.parse(state);
+        }
+        
+        if (state.collapse) {
+          for (var i = 0; i < state.collapse.length; i++) {
+            var list = document.getElementById('project_' + state.collapse[i]);
+            
+            if (list) {
+              list.querySelector('button.hide')['click']();
+            }
+          }
+        }
       }
     }
   }
