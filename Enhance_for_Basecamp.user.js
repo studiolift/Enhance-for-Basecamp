@@ -108,7 +108,7 @@ if (window.fluid) memory = (function () {
 })();
 
 /*
- * Load a specific set of localStorage data and parse it
+ * Loading and preparing data
  */
 function getData(ns) {
   var data = memory.getItem(ns) || false;
@@ -117,9 +117,6 @@ function getData(ns) {
   return data;
 }
 
-/*
- * Load config
- */
 function getConfig() {
   return getData('config') || {
     todoCollapse: true,
@@ -133,13 +130,13 @@ function getConfig() {
   };
 }
 
-/*
- * Load state
- */
 function getOverview() {
   return getData('overview') || {};
 }
 
+/*
+ * Preparing and saving data
+ */
 function setData(ns, obj) {
   memory.setItem(ns, JSON.stringify(obj));
 }
@@ -152,268 +149,260 @@ function setOverview(obj) {
   setData('overview', obj);
 }
 
-// ------------------------------------------------------------
-// Configuration
-// ------------------------------------------------------------
-var config = getConfig();
+/*
+ * Stores the current state of the overview collapse state
+ */
+function saveOverviewState() {
+  var collapsed = body.querySelectorAll('.todo .hide.hidden'),
+      toSave = [],
+      state = getOverview();
+  
+  if (collapsed) {
+    for (var i = 0; i < collapsed.length; i++) {
+      toSave.push(collapsed[i].parentNode.id.replace('project_', ''));
+    }
+  }
+  
+  state.collapse = toSave;
+  setOverview(state);
+}
+
+function eHasClass(target, search) {
+  if (target.className.indexOf(search) != -1) {
+    return true;
+  }
+
+  return false;
+}
+
+/*
+ * Show the provided element
+ */
+function eShow(target) {
+  if (isArray(target) || isNodeList(target)) {
+    for (var i = 0; i < target.length; i++) {
+      eShow(target[i]);
+    }
+  } else if (eHasClass(target, 'hidden')) {
+    target.className = target.className.replace(/ hidden/, '');
+  }
+}
+
+/*
+ * Hide the provided element
+ */
+ function eHide(target) {
+  if (isArray(target) || isNodeList(target)) {
+    for (var i = 0; i < target.length; i++) {
+      eHide(target[i]);
+    }
+  } else if (!eHasClass(target, 'hidden')) {
+    target.className += ' hidden';
+  }
+}
+
+/*
+ * Testing for Arrays and NodeLists
+ */
+function isArray(target) {
+  return target.constructor == Array;
+}
+
+function isNodeList(target) {
+  return target.constructor == NodeList;
+}
+
+/*
+ * Event handlers
+ */
+function hideTodo(e){
+  eHide([e.target.parentNode.nextSibling.nextSibling, e.target]);
+  eShow(e.target.nextSibling);
+  saveOverviewState();
+}
+
+function showTodo(e){
+  eShow([e.target.parentNode.nextSibling.nextSibling, e.target.previousSibling]);
+  eHide(e.target);
+  saveOverviewState();
+}
+
+function hideAllTodo(e){
+  eHide([tables, minButtons, e.target]);
+  eShow([maxButtons, e.target.nextSibling]);
+  saveOverviewState();
+}
+
+function showAllTodo(e){
+  eShow([tables, minButtons, e.target.previousSibling]);
+  eHide([maxButtons, e.target]);
+  saveOverviewState();
+}
 
 // ------------------------------------------------------------
 // Enhance!
 // ------------------------------------------------------------
 
-var Enhance = function(){
-  // Add custom styles
-  var body = document.getElementsByTagName('body')[0],
-      style = document.createElement('style');
+// Add custom styles
+var body = document.getElementsByTagName('body')[0],
+    config = getConfig(),
+    style = document.createElement('style');
+    
+style.textContent = [
+  '.quick_link { font-size:11px; font-weight:normal; text-decoration:none; background:transparent url(https://asset0.basecamphq.com/images/basecamp_sprites.png) no-repeat 0 0; width:17px; text-indent:-9999px; display:inline-block; line-height:17px; visibility:hidden; }',
+  '.todo_list:hover h2 .quick_link, tr:hover .quick_link { visibility:visible; }',
+  '.quick_link:hover { background-color:transparent; cursor:pointer; }',
+  '.quick_link.time { background-position:-392px 0; }',
+  '.quick_link.comments { background-position:-104px 0; width:13px; line-height:13px; margin:2px 0 0 5px; }',
+  '#collapse { position:absolute; left:30px; top:55px; }',
+  'h2 button, #collapse button { background-color:#EEE; border:solid 1px #CCC; margin-left:-5px; width:17px; height:16px; text-align:center; line-height:14px; padding:0; position:relative; top:-2px; }',
+  '#collapse button { width:85px; padding:0 5px; text-align:left; }',
+  'h2 button:hover, #collapse button:hover { background-color:#FFF; cursor:pointer; }',
+  '.priority { color:#fff; display:inline-block; padding:3px; font-size:0.8em; line-height:1.3em; text-transform:uppercase; margin-right:3px; border-radius:4px; width:31px; text-align:center; }',
+  '.page_header .content .item .priority { width:45px; }',
+  '.todo_cold { background-color:#' + config.colours.cold + '; }',
+  '.todo_warm { background-color:#' + config.colours.warm + '; }',
+  '.todo_hot { background-color:#' + config.colours.hot + '; }',
+  '.hidden { display:none; }'
+].join('\n');
+
+document.getElementsByTagName('head')[0].appendChild(style);
+
+if (eHasClass(body, 'todoglobal')) {
+  var todoLists = body.querySelectorAll('.todo_list');
+
+  if (todoLists.length > 0) {
+    for (var i = 0; i < todoLists.length; i++) {
+      var list = todoLists[i],
+          h2 = list.getElementsByTagName('h2')[0],
+          projectId = h2.getElementsByTagName('a')[0].href.split('/')[4];
       
-  style.textContent = [
-    '.quick_link { font-size:11px; font-weight:normal; text-decoration:none; background:transparent url(https://asset0.basecamphq.com/images/basecamp_sprites.png) no-repeat 0 0; width:17px; text-indent:-9999px; display:inline-block; line-height:17px; visibility:hidden; }',
-    '.todo_list:hover h2 .quick_link, tr:hover .quick_link { visibility:visible; }',
-    '.quick_link:hover { background-color:transparent; cursor:pointer; }',
-    '.quick_link.time { background-position:-392px 0; }',
-    '.quick_link.comments { background-position:-104px 0; width:13px; line-height:13px; margin:2px 0 0 5px; }',
-    '#collapse { position:absolute; left:30px; top:55px; }',
-    'h2 button, #collapse button { background-color:#EEE; border:solid 1px #CCC; margin-left:-5px; width:17px; height:16px; text-align:center; line-height:14px; padding:0; position:relative; top:-2px; }',
-    '#collapse button { width:85px; padding:0 5px; text-align:left; }',
-    'h2 button:hover, #collapse button:hover { background-color:#FFF; cursor:pointer; }',
-    '.priority { color:#fff; display:inline-block; padding:3px; font-size:0.8em; line-height:1.3em; text-transform:uppercase; margin-right:3px; border-radius:4px; width:31px; text-align:center; }',
-    '.page_header .content .item .priority { width:45px; }',
-    '.todo_cold { background-color:#' + config.colours.cold + '; }',
-    '.todo_warm { background-color:#' + config.colours.warm + '; }',
-    '.todo_hot { background-color:#' + config.colours.hot + '; }',
-    '.hidden { display:none; }'
-  ].join('\n');
-
-  document.getElementsByTagName('head')[0].appendChild(style);
-
-  // Helper stuff
-  
-  /*
-   * Stores the current state of the overview collapse state
-   */
-  function saveOverviewState() {
-    var collapsed = body.querySelectorAll('.todo .hide.hidden'),
-        toSave = [],
-        state = getOverview();
-    
-    if (collapsed) {
-      for (var i = 0; i < collapsed.length; i++) {
-        toSave.push(collapsed[i].parentNode.id.replace('project_', ''));
-      }
-    }
-    
-    state.collapse = toSave;
-    setOverview(state);
-  }
-
-  function eHasClass(target, search) {
-    if (target.className.indexOf(search) != -1) {
-      return true;
-    }
-
-    return false;
-  }
-
-  /*
-   * Show the provided element
-   */
-  function eShow(target) {
-    if (isArray(target) || isNodeList(target)) {
-      for (var i = 0; i < target.length; i++) {
-        eShow(target[i]);
-      }
-    } else if (eHasClass(target, 'hidden')) {
-      target.className = target.className.replace(/ hidden/, '');
-    }
-  }
-
-  /*
-   * Hide the provided element
-   */
-   function eHide(target) {
-    if (isArray(target) || isNodeList(target)) {
-      for (var i = 0; i < target.length; i++) {
-        eHide(target[i]);
-      }
-    } else if (!eHasClass(target, 'hidden')) {
-      target.className += ' hidden';
-    }
-  }
-
-  /*
-   * Testing for Arrays and NodeLists
-   */
-  function isArray(target) {
-    return target.constructor == Array;
-  }
-
-  function isNodeList(target) {
-    return target.constructor == NodeList;
-  }
-
-  function hideTodo(e){
-    eHide([e.target.parentNode.nextSibling.nextSibling, e.target]);
-    eShow(e.target.nextSibling);
-    saveOverviewState();
-  }
-
-  function showTodo(e){
-    eShow([e.target.parentNode.nextSibling.nextSibling, e.target.previousSibling]);
-    eHide(e.target);
-    saveOverviewState();
-  }
-
-  function hideAllTodo(e){
-    eHide([tables, minButtons, e.target]);
-    eShow([maxButtons, e.target.nextSibling]);
-    saveOverviewState();
-  }
-
-  function showAllTodo(e){
-    eShow([tables, minButtons, e.target.previousSibling]);
-    eHide([maxButtons, e.target]);
-    saveOverviewState();
-  }
-
-  /*
-   * Now let's add some features!
-   */
-  if (eHasClass(body, 'todoglobal')) {
-    var todoLists = body.querySelectorAll('.todo_list');
-
-    if (todoLists.length > 0) {
-      for (var i = 0; i < todoLists.length; i++) {
-        var list = todoLists[i],
-            h2 = list.getElementsByTagName('h2')[0],
-            projectId = h2.getElementsByTagName('a')[0].href.split('/')[4];
-        
-        h2.id = 'project_' + projectId;
-
-        if (config.todoCollapse) {
-          var minButton = document.createElement('button'),
-              maxButton = document.createElement('button');
-              
-          minButton.className = 'hide';
-          minButton.title = 'Collapse';
-          minButton.textContent = '-';
-          minButton.onclick = hideTodo;
-
-          maxButton.className = 'show hidden';
-          maxButton.title = 'Expand';
-          maxButton.textContent = '+';
-          maxButton.onclick = showTodo;
-
-          h2.insertBefore(maxButton, h2.firstChild);
-          h2.insertBefore(minButton, maxButton);
-        }
-
-        // Quick links
-        if (config.quickLinks) {
-          // Timesheet
-          var timesheet = document.createElement('a');
-              timesheet.href = h2.getElementsByTagName('a')[0].href.replace('todo_lists', 'time_entries');
-              timesheet.className = 'quick_link time';
-              timesheet.textContent = 'Timesheet';
-          h2.appendChild(timesheet);
-
-          var proj = h2.getElementsByTagName('a')[0].href.replace('todo_lists', 'todo_items/');
-
-          // Todo comments
-          var rows = list.getElementsByTagName('tr');
-
-          for (var x = 0; x < rows.length; x++) {
-            var row = rows[x],
-                id = row.getElementsByTagName('small')[0].id.split('_'),
-                comments = document.createElement('a');
-                
-            comments.href = proj + id[1] + '/comments';
-            comments.className = 'quick_link comments';
-            comments.textContent = 'Comments';
-            row.querySelector('td:last-child').appendChild(comments);
-          }
-        }
-      }
+      h2.id = 'project_' + projectId;
 
       if (config.todoCollapse) {
-        // Expand/Collapse all buttons
-        var inner = body.querySelector('.Full .innercol'),
-            tables = inner.querySelectorAll('.todolist'),
-            minButtons = inner.querySelectorAll('.todo_list .hide'),
-            maxButtons = inner.querySelectorAll('.todo_list .show'),
-            collapseButton = document.createElement('button'),
-            expandButton = document.createElement('button'),
-            collapseExpand = document.createElement('div'),
-            state = getOverview();
+        var minButton = document.createElement('button'),
+            maxButton = document.createElement('button');
             
-        collapseButton.className = 'hide';
-        collapseButton.textContent = '- Collapse All';
-        collapseButton.onclick = hideAllTodo;
+        minButton.className = 'hide';
+        minButton.title = 'Collapse';
+        minButton.textContent = '-';
+        minButton.onclick = hideTodo;
 
-        expandButton.className = 'show hidden';
-        expandButton.textContent = '+ Expand All';
-        expandButton.onclick = showAllTodo;
+        maxButton.className = 'show hidden';
+        maxButton.title = 'Expand';
+        maxButton.textContent = '+';
+        maxButton.onclick = showTodo;
 
-        collapseExpand.id = 'collapse';
+        h2.insertBefore(maxButton, h2.firstChild);
+        h2.insertBefore(minButton, maxButton);
+      }
 
-        collapseExpand.appendChild(collapseButton);
-        collapseExpand.appendChild(expandButton);
+      // Quick links
+      if (config.quickLinks) {
+        // Timesheet
+        var timesheet = document.createElement('a');
+            timesheet.href = h2.getElementsByTagName('a')[0].href.replace('todo_lists', 'time_entries');
+            timesheet.className = 'quick_link time';
+            timesheet.textContent = 'Timesheet';
+        h2.appendChild(timesheet);
 
-        inner.insertBefore(collapseExpand, inner.firstChild);
-        
-        // Set up default state
-        if (state.collapse) {
-          for (var i = 0; i < state.collapse.length; i++) {
-            var list = document.getElementById('project_' + state.collapse[i]);
-            
-            if (list) {
-              list.querySelector('button.hide')['click']();
-            }
+        var proj = h2.getElementsByTagName('a')[0].href.replace('todo_lists', 'todo_items/');
+
+        // Todo comments
+        var rows = list.getElementsByTagName('tr');
+
+        for (var x = 0; x < rows.length; x++) {
+          var row = rows[x],
+              id = row.getElementsByTagName('small')[0].id.split('_'),
+              comments = document.createElement('a');
+              
+          comments.href = proj + id[1] + '/comments';
+          comments.className = 'quick_link comments';
+          comments.textContent = 'Comments';
+          row.querySelector('td:last-child').appendChild(comments);
+        }
+      }
+    }
+
+    if (config.todoCollapse) {
+      // Expand/Collapse all buttons
+      var inner = body.querySelector('.Full .innercol'),
+          tables = inner.querySelectorAll('.todolist'),
+          minButtons = inner.querySelectorAll('.todo_list .hide'),
+          maxButtons = inner.querySelectorAll('.todo_list .show'),
+          collapseButton = document.createElement('button'),
+          expandButton = document.createElement('button'),
+          collapseExpand = document.createElement('div'),
+          state = getOverview();
+          
+      collapseButton.className = 'hide';
+      collapseButton.textContent = '- Collapse All';
+      collapseButton.onclick = hideAllTodo;
+
+      expandButton.className = 'show hidden';
+      expandButton.textContent = '+ Expand All';
+      expandButton.onclick = showAllTodo;
+
+      collapseExpand.id = 'collapse';
+
+      collapseExpand.appendChild(collapseButton);
+      collapseExpand.appendChild(expandButton);
+
+      inner.insertBefore(collapseExpand, inner.firstChild);
+      
+      // Set up default state
+      if (state.collapse) {
+        for (var i = 0; i < state.collapse.length; i++) {
+          var list = document.getElementById('project_' + state.collapse[i]);
+          
+          if (list) {
+            list.querySelector('button.hide')['click']();
           }
         }
       }
     }
   }
+}
 
-  // Priorities
-  if (config.priorities) {
-    var todos = body.querySelectorAll('.todolist .content, .item .item_content, .items_wrapper .content span, .page_header .content .item, .event .item span');
+// Priorities
+if (config.priorities) {
+  var todos = body.querySelectorAll('.todolist .content, .item .item_content, .items_wrapper .content span, .page_header .content .item, .event .item span');
 
-    for (var i = 0; i < todos.length; i++) {
-      var todo = todos[i],
-          t = todo.textContent.match(/\[(HOT|WARM|COLD)(?=\])/g);
+  for (var i = 0; i < todos.length; i++) {
+    var todo = todos[i],
+        t = todo.textContent.match(/\[(HOT|WARM|COLD)(?=\])/g);
 
-      if (t) {
-        var r = todo.innerHTML,
-            todoPriority = document.createElement('span');
-            
-        todo.innerHTML = r.replace(t[0] + '] ', '');
-        t = t[0].substr(1,4).toLowerCase();
-        
-        todoPriority.textContent = t;
-        todoPriority.className = 'priority todo_' + t;
-        todo.insertBefore(todoPriority, todo.firstChild);
-      }
+    if (t) {
+      var r = todo.innerHTML,
+          todoPriority = document.createElement('span');
+          
+      todo.innerHTML = r.replace(t[0] + '] ', '');
+      t = t[0].substr(1,4).toLowerCase();
+      
+      todoPriority.textContent = t;
+      todoPriority.className = 'priority todo_' + t;
+      todo.insertBefore(todoPriority, todo.firstChild);
     }
   }
+}
 
-  // Overview Quick link
-  if (config.quickLinks) {
-    // Separating pipe
-    var separator = document.createElement('span'),
-        overviewLink = document.createElement('a'),
-        globalLinks = document.getElementById('settings_signout_and_help');
-    
-    separator.className = 'pipe';
-    separator.textContent = '|';
+// Overview Quick link
+if (config.quickLinks) {
+  // Separating pipe
+  var separator = document.createElement('span'),
+      overviewLink = document.createElement('a'),
+      globalLinks = document.getElementById('settings_signout_and_help');
+  
+  separator.className = 'pipe';
+  separator.textContent = '|';
 
-    // The actual link
-    overviewLink.href = '/todo_lists';
-    overviewLink.textContent = 'Overview';
+  // The actual link
+  overviewLink.href = '/todo_lists';
+  overviewLink.textContent = 'Overview';
 
-    // Adding required HTML and spaces
-    globalLinks.insertBefore(overviewLink, globalLinks.childNodes[2]);
-    globalLinks.insertBefore(document.createTextNode(' '), overviewLink);
-    globalLinks.insertBefore(separator, overviewLink.previousSibling);
-    globalLinks.insertBefore(document.createTextNode(' '), separator);
-  }
-}();
+  // Adding required HTML and spaces
+  globalLinks.insertBefore(overviewLink, globalLinks.childNodes[2]);
+  globalLinks.insertBefore(document.createTextNode(' '), overviewLink);
+  globalLinks.insertBefore(separator, overviewLink.previousSibling);
+  globalLinks.insertBefore(document.createTextNode(' '), separator);
+}
