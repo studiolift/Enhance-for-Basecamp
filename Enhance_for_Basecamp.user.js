@@ -157,16 +157,16 @@ function setOverview(obj) {
  */
 function saveOverviewState() {
   var collapsed = body.querySelectorAll('.todo .hide.hidden'),
-      toSave = [],
+      toCollapse = [],
       state = getOverview();
   
   if (collapsed) {
     for (var i = 0; i < collapsed.length; i++) {
-      toSave.push(collapsed[i].parentNode.id.replace('project_', ''));
+      toCollapse.push(collapsed[i].parentNode.id.replace('project_', ''));
     }
   }
   
-  state.collapse = toSave;
+  state.collapse = toCollapse;
   setOverview(state);
 }
 
@@ -272,7 +272,8 @@ style.textContent = [
 document.getElementsByTagName('head')[0].appendChild(style);
 
 if (eHasClass(body, 'todoglobal')) {
-  var todoLists = body.querySelectorAll('.todo_list');
+  var todoLists = body.querySelectorAll('.todo_list'),
+      state = getOverview();
 
   if (todoLists.length > 0) {
     for (var i = 0; i < todoLists.length; i++) {
@@ -335,8 +336,7 @@ if (eHasClass(body, 'todoglobal')) {
           maxButtons = inner.querySelectorAll('.todo_list .show'),
           collapseButton = document.createElement('button'),
           expandButton = document.createElement('button'),
-          collapseExpand = document.createElement('div'),
-          state = getOverview();
+          collapseExpand = document.createElement('div');
           
       collapseButton.className = 'hide';
       collapseButton.textContent = '- Collapse All';
