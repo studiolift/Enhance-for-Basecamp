@@ -5,7 +5,7 @@
 // @include     https://basecamphq.com/*
 // @include     http://*.basecamphq.com/*
 // @include     https://*.basecamphq.com/*
-// @version     0.3
+// @version     0.4
 // @author      Mike Robinson
 // @homepage    http://twitter.com/akamike
 // ==/UserScript==
