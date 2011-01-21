@@ -131,7 +131,9 @@ if (config.constructor == String) {
 
 var Enhance = function(){
   // Add custom styles
-  var style = document.createElement('style');
+  var body = document.getElementsByTagName('body')[0],
+      style = document.createElement('style');
+      
   style.textContent = [
     '.quick_link { font-size:11px; font-weight:normal; text-decoration:none; background:transparent url(https://asset0.basecamphq.com/images/basecamp_sprites.png) no-repeat 0 0; width:17px; text-indent:-9999px; display:inline-block; line-height:17px; visibility:hidden; }',
     '.todo_list:hover h2 .quick_link, tr:hover .quick_link { visibility:visible; }',
@@ -153,22 +155,20 @@ var Enhance = function(){
   document.getElementsByTagName('head')[0].appendChild(style);
 
   // Helper stuff
-  var body = document.getElementsByTagName('body')[0];
   
   /*
    * Stores the current state of the overview collapse state
    */
   function saveOverviewState() {
-    var collapsed = body.querySelectorAll('.todo .hide.hidden');
-    var toSave = [];
+    var collapsed = body.querySelectorAll('.todo .hide.hidden'),
+        toSave = [],
+        state = memory.getItem('enhanceOverview') || {};
     
     if (collapsed) {
       for (var i = 0; i < collapsed.length; i++) {
         toSave.push(collapsed[i].parentNode.id.replace('project_', ''));
       }
     }
-    
-    var state = memory.getItem('enhanceOverview') || {};
     
     if (state.constructor == String) {
       state = JSON.parse(state);
@@ -263,24 +263,25 @@ var Enhance = function(){
 
     if (todoLists.length > 0) {
       for (var i = 0; i < todoLists.length; i++) {
-        var list = todoLists[i];
-        var h2 = list.getElementsByTagName('h2')[0];
-        var projectId = h2.getElementsByTagName('a')[0].href.split('/')[4];
+        var list = todoLists[i],
+            h2 = list.getElementsByTagName('h2')[0],
+            projectId = h2.getElementsByTagName('a')[0].href.split('/')[4];
         
         h2.id = 'project_' + projectId;
 
         if (config.todoCollapse) {
-          var minButton = document.createElement('button');
-              minButton.className = 'hide';
-              minButton.title = 'Collapse';
-              minButton.textContent = '-';
-              minButton.addEventListener('click', hideTodo);
+          var minButton = document.createElement('button'),
+              maxButton = document.createElement('button');
+              
+          minButton.className = 'hide';
+          minButton.title = 'Collapse';
+          minButton.textContent = '-';
+          minButton.addEventListener('click', hideTodo);
 
-          var maxButton = document.createElement('button');
-              maxButton.className = 'show hidden';
-              maxButton.title = 'Expand';
-              maxButton.textContent = '+';
-              maxButton.addEventListener('click', showTodo);
+          maxButton.className = 'show hidden';
+          maxButton.title = 'Expand';
+          maxButton.textContent = '+';
+          maxButton.addEventListener('click', showTodo);
 
           h2.insertBefore(maxButton, h2.firstChild);
           h2.insertBefore(minButton, maxButton);
@@ -301,13 +302,13 @@ var Enhance = function(){
           var rows = list.getElementsByTagName('tr');
 
           for (var x = 0; x < rows.length; x++) {
-            var row = rows[x];
-            var id = row.getElementsByTagName('small')[0].id.split('_');
-
-            var comments = document.createElement('a');
-                comments.href = proj + id[1] + '/comments';
-                comments.className = 'quick_link comments';
-                comments.textContent = 'Comments';
+            var row = rows[x],
+                id = row.getElementsByTagName('small')[0].id.split('_'),
+                comments = document.createElement('a');
+                
+            comments.href = proj + id[1] + '/comments';
+            comments.className = 'quick_link comments';
+            comments.textContent = 'Comments';
             row.querySelector('td:last-child').appendChild(comments);
           }
         }
@@ -315,30 +316,31 @@ var Enhance = function(){
 
       if (config.todoCollapse) {
         // Expand/Collapse all buttons
-        var inner = body.querySelector('.Full .innercol');
-        var tables = inner.querySelectorAll('.todolist');
-        var minButtons = inner.querySelectorAll('.todo_list .hide');
-        var maxButtons = inner.querySelectorAll('.todo_list .show');
+        var inner = body.querySelector('.Full .innercol'),
+            tables = inner.querySelectorAll('.todolist'),
+            minButtons = inner.querySelectorAll('.todo_list .hide'),
+            maxButtons = inner.querySelectorAll('.todo_list .show'),
+            collapseButton = document.createElement('button'),
+            expandButton = document.createElement('button'),
+            collapseExpand = document.createElement('div'),
+            state = memory.getItem('enhanceOverview') || {};
+            
+        collapseButton.className = 'hide';
+        collapseButton.textContent = '- Collapse All';
+        collapseButton.addEventListener('click', hideAllTodo);
 
-        var collapseButton = document.createElement('button');
-            collapseButton.className = 'hide';
-            collapseButton.textContent = '- Collapse All';
-            collapseButton.addEventListener('click', hideAllTodo);
+        expandButton.className = 'show hidden';
+        expandButton.textContent = '+ Expand All';
+        expandButton.addEventListener('click', showAllTodo);
 
-        var expandButton = document.createElement('button');
-            expandButton.className = 'show hidden';
-            expandButton.textContent = '+ Expand All';
-            expandButton.addEventListener('click', showAllTodo);
-
-        var collapseExpand = document.createElement('div');
-            collapseExpand.id = 'collapse';
+        collapseExpand.id = 'collapse';
 
         collapseExpand.appendChild(collapseButton);
         collapseExpand.appendChild(expandButton);
 
         inner.insertBefore(collapseExpand, inner.firstChild);
         
-        var state = memory.getItem('enhanceOverview') || {};
+        // Set up default state
         if (state.constructor == String) {
           state = JSON.parse(state);
         }
@@ -361,16 +363,18 @@ var Enhance = function(){
     var todos = body.querySelectorAll('.todolist .content, .item .item_content, .items_wrapper .content span, .page_header .content .item, .event .item span');
 
     for (var i = 0; i < todos.length; i++) {
-      var todo = todos[i];
-      var t = todo.textContent.match(/\[(HOT|WARM|COLD)(?=\])/g);
+      var todo = todos[i],
+          t = todo.textContent.match(/\[(HOT|WARM|COLD)(?=\])/g);
 
       if (t) {
-        var r = todo.innerHTML;
+        var r = todo.innerHTML,
+            todoPriority = document.createElement('span');
+            
         todo.innerHTML = r.replace(t[0] + '] ', '');
         t = t[0].substr(1,4).toLowerCase();
-        var todoPriority = document.createElement('span');
-            todoPriority.textContent = t;
-            todoPriority.className = 'priority todo_' + t;
+        
+        todoPriority.textContent = t;
+        todoPriority.className = 'priority todo_' + t;
         todo.insertBefore(todoPriority, todo.firstChild);
       }
     }
@@ -379,20 +383,21 @@ var Enhance = function(){
   // Overview Quick link
   if (config.quickLinks) {
     // Separating pipe
-    var separator = document.createElement('span');
-        separator.className = 'pipe';
-        separator.textContent = '|';
+    var separator = document.createElement('span'),
+        overviewLink = document.createElement('a'),
+        globalLinks = document.getElementById('settings_signout_and_help');
+    
+    separator.className = 'pipe';
+    separator.textContent = '|';
 
     // The actual link
-    var overviewLink = document.createElement('a');
-        overviewLink.href = '/todo_lists';
-        overviewLink.textContent = 'Overview';
+    overviewLink.href = '/todo_lists';
+    overviewLink.textContent = 'Overview';
 
     // Adding required HTML and spaces
-    var globalLinks = document.getElementById('settings_signout_and_help');
-        globalLinks.insertBefore(overviewLink, globalLinks.childNodes[2]);
-        globalLinks.insertBefore(document.createTextNode(' '), overviewLink);
-        globalLinks.insertBefore(separator, overviewLink.previousSibling);
-        globalLinks.insertBefore(document.createTextNode(' '), separator);
+    globalLinks.insertBefore(overviewLink, globalLinks.childNodes[2]);
+    globalLinks.insertBefore(document.createTextNode(' '), overviewLink);
+    globalLinks.insertBefore(separator, overviewLink.previousSibling);
+    globalLinks.insertBefore(document.createTextNode(' '), separator);
   }
 }();
