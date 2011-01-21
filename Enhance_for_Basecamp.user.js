@@ -11,7 +11,7 @@
 // ==/UserScript==
 
 var body = document.getElementsByTagName('body')[0],
-    var memory = window.localStorage,
+    memory = window.localStorage,
     config = getConfig(),
     style = document.createElement('style');
 
