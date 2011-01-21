@@ -182,6 +182,8 @@ function eHasClass(target, search) {
  * Show the provided element
  */
 function eShow(target) {
+  if (target.constructor == Text) return;
+
   if (isArray(target) || isNodeList(target)) {
     for (var i = 0; i < target.length; i++) {
       eShow(target[i]);
@@ -195,6 +197,8 @@ function eShow(target) {
  * Hide the provided element
  */
  function eHide(target) {
+  if (target.constructor == Text) return;
+  
   if (isArray(target) || isNodeList(target)) {
     for (var i = 0; i < target.length; i++) {
       eHide(target[i]);
